@@ -1,116 +1,85 @@
 import {
     DailyForecastType,
-    hourlyForecastType,
+    ForecastData,
+    HourlyForecastData,
+    HourlyForecastType,
+    ObservationsData,
+    ObservationStationsData,
     ObservationType,
+    PointData,
 } from "../types";
+import {
+    calculateFeelsLike,
+    celsiusToFahrenheit,
+    handleApiResponse,
+    metersToMiles,
+    pascalToInHg,
+} from "../utils";
 
-// Function to calculate the "feels like" temperature
-const calculateFeelsLike = (
-    temperature: number,
-    heatIndex: number | null,
-    windChill: number | null
-): number => {
-    if (heatIndex !== null && temperature >= 80) {
-        // 80°F
-        return heatIndex;
-    } else if (windChill !== null && temperature <= 50) {
-        // 50°F
-        return windChill;
-    } else {
-        return temperature;
-    }
-};
-
-// Function to convert Celsius to Fahrenheit
-const celsiusToFahrenheit = (celsius: number): number => {
-    return Math.round((celsius * 9/5) + 32);
-};
+const API_CONFIG = {
+    baseUrl: "https://api.weather.gov",
+    headers: {
+        "User-Agent": `Weather App (${process.env.USER_AGENT_EMAIL})`,
+    },
+} as const;
 
 // Function to fetch weather data
 const fetchWeatherData = async () => {
-    // URL for the National Weather Service API for New York City
-    const url = "https://api.weather.gov/points/40.7128,-74.0060";
-    // Headers for the request, including User-Agent
-    const headers = {
-        "User-Agent": `Weather App (${process.env.USER_AGENT_EMAIL})`,
-    };
-
     try {
-        // Fetch metadata for the specified point (latitude and longitude)
-        const response = await fetch(url, { headers, cache: "force-cache" });
-        if (!response.ok) {
-            throw new Error(
-                `Error fetching point data: ${response.statusText}`
-            );
-        }
-        const data = await response.json();
-
-        // Extract the forecast and hourly forecast URLs from the response
-        const forecastDailyUrl = data.properties.forecast;
-        const forecastHourlyUrl = data.properties.forecastHourly;
-        const observationStationsUrl = data.properties.observationStations;
-
-        // Fetch the forecast data using the forecast URL
-        const forecastDailyResponse = await fetch(forecastDailyUrl, {
-            headers,
-        });
-        if (!forecastDailyResponse.ok) {
-            throw new Error(
-                `Error fetching forecast data: ${forecastDailyResponse.statusText}`
-            );
-        }
-        const forecastDailyData = await forecastDailyResponse.json();
-
-        // Fetch the hourly forecast data using the forecastHourly URL
-        const forecastHourlyResponse = await fetch(forecastHourlyUrl, {
-            headers,
-        });
-        if (!forecastHourlyResponse.ok) {
-            throw new Error(
-                `Error fetching hourly forecast data: ${forecastHourlyResponse.statusText}`
-            );
-        }
-        const forecastHourlyData = await forecastHourlyResponse.json();
-
-        const observationStationsResponse = await fetch(
-            observationStationsUrl,
-            { headers }
+        // Initial point data fetch
+        const pointUrl = `${API_CONFIG.baseUrl}/points/40.7128,-74.0060`;
+        const pointData = await handleApiResponse<PointData>(
+            await fetch(pointUrl, {
+                headers: API_CONFIG.headers,
+                cache: "force-cache",
+            }),
+            "Error fetching point data"
         );
-        if (!observationStationsResponse.ok) {
-            throw new Error(
-                `Error fetching observation stations data: ${observationStationsResponse.statusText}`
-            );
-        }
-        const observationStationsData =
-            await observationStationsResponse.json();
-        const nearestStation =
-            observationStationsData.features[0].properties.stationIdentifier;
 
-        const observationsUrl = `https://api.weather.gov/stations/${nearestStation}/observations/latest`;
-        const observationsResponse = await fetch(observationsUrl, { headers });
-        if (!observationsResponse.ok) {
-            throw new Error(
-                `Error fetching observations data: ${observationsResponse.statusText}`
-            );
-        }
-        const observationsData = await observationsResponse.json();
+        // Parallel fetch for forecasts and stations
+        const [forecastDailyData, forecastHourlyData, observationStationsData] =
+            await Promise.all([
+                handleApiResponse<ForecastData>(
+                    await fetch(pointData.properties.forecast, {
+                        headers: API_CONFIG.headers,
+                    }),
+                    "Error fetching forecast data"
+                ),
+                handleApiResponse<HourlyForecastData>(
+                    await fetch(pointData.properties.forecastHourly, {
+                        headers: API_CONFIG.headers,
+                    }),
+                    "Error fetching hourly forecast data"
+                ),
+                handleApiResponse<ObservationStationsData>(
+                    await fetch(pointData.properties.observationStations, {
+                        headers: API_CONFIG.headers,
+                    }),
+                    "Error fetching observation stations data"
+                ),
+            ]);
 
-        // Check if the forecast data structure is valid
+        // Validate forecast data structure
         if (
-            !forecastDailyData.properties ||
-            !forecastDailyData.properties.periods
+            !forecastDailyData.properties?.periods ||
+            !forecastHourlyData.properties?.periods
         ) {
             throw new Error("Invalid forecast data structure");
         }
-        // Check if the hourly forecast data structure is valid
-        if (
-            !forecastHourlyData.properties ||
-            !forecastHourlyData.properties.periods
-        ) {
-            throw new Error("Invalid hourly forecast data structure");
-        }
 
-        // Map the forecast periods to a more usable format
+        // Fetch observations from nearest station
+        const nearestStation =
+            observationStationsData.features[0].properties.stationIdentifier;
+        const observationsUrl = `${API_CONFIG.baseUrl}/stations/${nearestStation}/observations/latest`;
+        const observationsData = await handleApiResponse<ObservationsData>(
+            await fetch(observationsUrl, {
+                headers: API_CONFIG.headers,
+                cache: "force-cache",
+            }),
+            "Error fetching observations data"
+        );
+
+        // Process the data
         const dailyForecasts = forecastDailyData.properties.periods.map(
             (period: DailyForecastType) => ({
                 name: period.name,
@@ -126,9 +95,8 @@ const fetchWeatherData = async () => {
             })
         );
 
-        // Map the hourly forecast periods to a more usable format
         const hourlyForecast = forecastHourlyData.properties.periods.map(
-            (period: hourlyForecastType) => ({
+            (period: HourlyForecastType) => ({
                 name: period.name,
                 startTime: period.startTime,
                 endTime: period.endTime,
@@ -142,37 +110,26 @@ const fetchWeatherData = async () => {
             })
         );
 
-        // Extract additional observation details and convert to Fahrenheit
+        const obserProps = observationsData.properties;
         const observations: ObservationType = {
-            temperature: celsiusToFahrenheit(
-                observationsData.properties.temperature.value
-            ),
+            temperature: celsiusToFahrenheit(obserProps.temperature.value),
             feelsLike: calculateFeelsLike(
-                celsiusToFahrenheit(
-                    observationsData.properties.temperature.value
-                ),
-                observationsData.properties.heatIndex.value !== null
-                    ? celsiusToFahrenheit(
-                          observationsData.properties.heatIndex.value
-                      )
+                celsiusToFahrenheit(obserProps.temperature.value),
+                obserProps.heatIndex.value !== null
+                    ? celsiusToFahrenheit(obserProps.heatIndex.value)
                     : null,
-                observationsData.properties.windChill.value !== null
-                    ? celsiusToFahrenheit(
-                          observationsData.properties.windChill.value
-                      )
+                obserProps.windChill.value !== null
+                    ? celsiusToFahrenheit(obserProps.windChill.value)
                     : null
             ),
-            humidity: observationsData.properties.relativeHumidity.value,
-            visibility: observationsData.properties.visibility.value,
-            pressure: observationsData.properties.barometricPressure.value,
+            humidity: Math.round(obserProps.relativeHumidity.value),
+            visibility: metersToMiles(obserProps.visibility.value),
+            pressure: pascalToInHg(obserProps.barometricPressure.value),
         };
-
-        console.log(observations);
 
         return { dailyForecasts, hourlyForecast, observations };
     } catch (error) {
-        // Log any errors that occur during the fetch process
-        console.error(error);
+        console.error("Weather data fetch error:", error);
         return {
             dailyForecasts: [],
             hourlyForecast: [],

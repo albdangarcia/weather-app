@@ -1,11 +1,11 @@
 import { fetchWeatherData } from "../lib/data/weather";
-import { DailyForecastType, hourlyForecastType, ObservationType } from "../lib/types";
+import { DailyForecastType, HourlyForecastType, ObservationType } from "../lib/types";
 import { montserrat } from "../fonts/fonts";
 
 // Define the type for the returned data
 interface WeatherData {
     dailyForecasts: DailyForecastType[];
-    hourlyForecast: hourlyForecastType[];
+    hourlyForecast: HourlyForecastType[];
     observations: ObservationType;
 }
 
@@ -21,7 +21,7 @@ const WeatherInfo = async () => {
                 <p>Feels Like: {observations.feelsLike} °F</p>
                 <p>Humidity: {observations.humidity} %</p>
                 <p>Visibility: {observations.visibility} meters</p>
-                <p>Pressure: {observations.pressure} Pa</p>
+                <p>Pressure: {observations.pressure} inHg</p>
             </div>
 
             <h1 className="font-bold text-xl">Daily Forecast</h1>
