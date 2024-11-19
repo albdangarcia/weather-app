@@ -1,22 +1,10 @@
 import { fetchWeatherData } from "../lib/data/weather";
-import {
-    DailyForecastType,
-    HourlyForecastType,
-    ObservationType,
-} from "../lib/types";
 import { montserrat } from "../fonts/fonts";
 import { getWeatherEmoji } from "../lib/utils";
 
-// Define the type for the returned data
-interface WeatherData {
-    dailyForecasts: DailyForecastType[];
-    hourlyForecast: HourlyForecastType[];
-    observations: ObservationType;
-}
-
 const WeatherInfo = async () => {
     // Fetch the weather data
-    const { dailyForecasts, hourlyForecast, observations }: WeatherData =
+    const { dailyForecasts, hourlyForecast, observations } =
         await fetchWeatherData();
 
     return (
@@ -31,35 +19,37 @@ const WeatherInfo = async () => {
             </div>
 
             <h1 className="font-bold text-xl">Daily Forecast</h1>
-            {dailyForecasts.map((period, index) => (
-                <div key={index} className="mb-6">
-                    <h2>{period.name}</h2>
-                    <p>Short Forecast: {period.shortForecast}</p>
-                    <p>Detailed Forecast: {period.detailedForecast}</p>
-                    <p>
-                        Temperature: {period.temperature}{" "}
-                        <span className={montserrat.className}>
-                            {period.temperatureUnit}
-                        </span>
-                    </p>
-                    <p>
-                        Wind: {period.windSpeed} {period.windDirection}
-                    </p>
-                    <p>Daytime: {period.isDaytime ? "Yes" : "No"}</p>
-                    <p>
-                        Start Time:{" "}
-                        {new Date(period.startTime).toLocaleString()}
-                    </p>
-                    <p>End Time: {new Date(period.endTime).toLocaleString()}</p>
-                </div>
-            ))}
+            <div className="">
+                {dailyForecasts.map((forecast, index) => (
+                    <div
+                        key={index}
+                        className="grid grid-cols-3 justify-between"
+                    >
+                        <p className="font-medium">{forecast.day}</p>
+                        <p className="text-center">
+                            {getWeatherEmoji(
+                                forecast.shortForecast,
+                                forecast.isDaytime
+                            )}{" "}
+                            {forecast.shortForecast}
+                        </p>
+                        <div className="flex space-x-2 justify-center">
+                            <p className="w-12 text-left">{forecast.low}°</p>
+                            <p className="w-12 text-left">{forecast.high}°</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
 
             <h1 className="font-bold text-xl">Hourly Forecast</h1>
             {hourlyForecast.map((period, index) => (
                 <div key={index} className="mb-6 grid grid-flow-row">
                     <p>{period.startTime}</p>
                     <p>
-                        {getWeatherEmoji(period.shortForecast, period.isDaytime)}{" "}
+                        {getWeatherEmoji(
+                            period.shortForecast,
+                            period.isDaytime
+                        )}{" "}
                         {period.shortForecast}
                     </p>
                     <p>

@@ -1,5 +1,4 @@
 import {
-    DailyForecastType,
     ForecastData,
     HourlyForecastData,
     HourlyForecastType,
@@ -15,6 +14,7 @@ import {
     handleApiResponse,
     metersToMiles,
     pascalToInHg,
+    processDailyForecasts,
 } from "../utils";
 
 const API_CONFIG = {
@@ -81,20 +81,8 @@ const fetchWeatherData = async () => {
         );
 
         // Process the data
-        const dailyForecasts = forecastDailyData.properties.periods.map(
-            (period: DailyForecastType) => ({
-                name: period.name,
-                startTime: period.startTime,
-                endTime: period.endTime,
-                isDaytime: period.isDaytime,
-                temperature: period.temperature,
-                temperatureUnit: period.temperatureUnit,
-                windSpeed: period.windSpeed,
-                windDirection: period.windDirection,
-                shortForecast: period.shortForecast,
-                detailedForecast: period.detailedForecast,
-            })
-        );
+        const dailyForecasts = processDailyForecasts(forecastDailyData.properties.periods);
+        console.log(forecastDailyData.properties.periods);
 
         const hourlyForecast = forecastHourlyData.properties.periods.map(
             (period: HourlyForecastType) => ({

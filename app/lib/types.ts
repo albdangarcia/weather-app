@@ -2,25 +2,25 @@ export interface DailyForecastType {
     name: string;
     startTime: string;
     endTime: string;
-    isDaytime: boolean;
     temperature: number;
-    temperatureUnit: string;
-    windSpeed: string;
-    windDirection: string;
     shortForecast: string;
-    detailedForecast: string;
+    isDaytime: boolean;
+}
+
+export interface ProcessedDailyForecast {
+    day: string;
+    shortForecast: string;
+    isDaytime: boolean;
+    high: number;
+    low: number;
 }
 
 export interface HourlyForecastType {
     startTime: string;
-    // endTime: string;
     isDaytime: boolean;
     temperature: number;
     temperatureUnit: string;
     shortForecast: string;
-    // windSpeed: string;
-    // windDirection: string;
-    // detailedForecast: string;
 }
 
 // Define the type for observation data

@@ -1,3 +1,5 @@
+import { DailyForecastType, ProcessedDailyForecast } from "./types";
+
 // Function to calculate the "feels like" temperature
 export const calculateFeelsLike = (
     temperature: number,
@@ -69,4 +71,44 @@ export const getWeatherEmoji = (shortForecast: string, isDaytime: boolean): stri
     } else {
         return "🌡️"; // Default emoji for other conditions
     }
+};
+
+// Function to process daily forecasts
+export const processDailyForecasts = (periods: DailyForecastType[]): ProcessedDailyForecast[] => {
+    const processedForecasts: ProcessedDailyForecast[] = [];
+    
+    // Remove the first period, assuming it refers to the current day (Tonight, Overnight, etc.)
+    if (periods.length > 0) {
+        periods.shift();  // Remove the first period
+    }
+    
+    for (let i = 0; i < periods.length; i += 2) {
+        const dayPeriod = periods[i];
+        const nightPeriod = periods[i + 1];
+        
+        if (!dayPeriod) continue;
+        
+        // Extract the day name from the full name (e.g., "Tuesday" -> "Tue")
+        let day = dayPeriod.name.split(' ')[0].slice(0, 3);
+        
+        // Replace the first day name with "Today"
+        if (i === 0) {
+            day = 'Today';
+        }
+        
+        // Calculate high and low temperatures
+        const high = nightPeriod ? Math.max(dayPeriod.temperature, nightPeriod.temperature) : dayPeriod.temperature;
+        const low = nightPeriod ? Math.min(dayPeriod.temperature, nightPeriod.temperature) : dayPeriod.temperature;
+        
+        // Day temperature is the high, night temperature is the low
+        processedForecasts.push({
+            day,
+            shortForecast: dayPeriod.shortForecast,
+            isDaytime: dayPeriod.isDaytime,
+            high,
+            low,
+        });
+    }
+    
+    return processedForecasts;
 };
