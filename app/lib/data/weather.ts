@@ -11,6 +11,7 @@ import {
 import {
     calculateFeelsLike,
     celsiusToFahrenheit,
+    formatTime,
     handleApiResponse,
     metersToMiles,
     pascalToInHg,
@@ -97,18 +98,13 @@ const fetchWeatherData = async () => {
 
         const hourlyForecast = forecastHourlyData.properties.periods.map(
             (period: HourlyForecastType) => ({
-                name: period.name,
-                startTime: period.startTime,
-                endTime: period.endTime,
+                startTime: formatTime(period.startTime),
                 isDaytime: period.isDaytime,
                 temperature: period.temperature,
                 temperatureUnit: period.temperatureUnit,
-                windSpeed: period.windSpeed,
-                windDirection: period.windDirection,
                 shortForecast: period.shortForecast,
-                detailedForecast: period.detailedForecast,
             })
-        );
+        ).slice(0, 24); // Limit to the first 24 hours
 
         const obserProps = observationsData.properties;
         const observations: ObservationType = {

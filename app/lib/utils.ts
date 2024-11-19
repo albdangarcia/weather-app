@@ -38,3 +38,35 @@ export const handleApiResponse = async <T>(response: Response, errorMessage: str
     const data = await response.json();
     return data as T;
 };
+
+// Function to format time to "h A" (e.g., "5 PM")
+export const formatTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: 'numeric', hour12: true });
+};
+
+// Function to map shortForecast to emojis
+export const getWeatherEmoji = (shortForecast: string, isDaytime: boolean): string => {
+    const forecast = shortForecast.toLowerCase();
+    if (forecast.includes("sunny") || (forecast.includes("clear") && isDaytime)) {
+        return "☀️";
+    } else if (forecast.includes("clear") && !isDaytime) {
+        return "🌙";
+    } else if (forecast.includes("mostly sunny")) {
+        return "🌤️";
+    } else if (forecast.includes("partly cloudy")) {
+        return "⛅️";
+    } else if (forecast.includes("cloudy")) {
+        return "☁️";
+    } else if (forecast.includes("rain")) {
+        return "🌧️";
+    } else if (forecast.includes("snow")) {
+        return "❄️";
+    } else if (forecast.includes("thunderstorm")) {
+        return "⛈️";
+    } else if (forecast.includes("fog")) {
+        return "🌫️";
+    } else {
+        return "🌡️"; // Default emoji for other conditions
+    }
+};

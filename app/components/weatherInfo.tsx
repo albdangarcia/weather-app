@@ -1,6 +1,11 @@
 import { fetchWeatherData } from "../lib/data/weather";
-import { DailyForecastType, HourlyForecastType, ObservationType } from "../lib/types";
+import {
+    DailyForecastType,
+    HourlyForecastType,
+    ObservationType,
+} from "../lib/types";
 import { montserrat } from "../fonts/fonts";
+import { getWeatherEmoji } from "../lib/utils";
 
 // Define the type for the returned data
 interface WeatherData {
@@ -11,7 +16,8 @@ interface WeatherData {
 
 const WeatherInfo = async () => {
     // Fetch the weather data
-    const { dailyForecasts, hourlyForecast, observations }: WeatherData = await fetchWeatherData();
+    const { dailyForecasts, hourlyForecast, observations }: WeatherData =
+        await fetchWeatherData();
 
     return (
         <div>
@@ -32,7 +38,9 @@ const WeatherInfo = async () => {
                     <p>Detailed Forecast: {period.detailedForecast}</p>
                     <p>
                         Temperature: {period.temperature}{" "}
-                        <span className={montserrat.className}>{period.temperatureUnit}</span>
+                        <span className={montserrat.className}>
+                            {period.temperatureUnit}
+                        </span>
                     </p>
                     <p>
                         Wind: {period.windSpeed} {period.windDirection}
@@ -48,23 +56,16 @@ const WeatherInfo = async () => {
 
             <h1 className="font-bold text-xl">Hourly Forecast</h1>
             {hourlyForecast.map((period, index) => (
-                <div key={index} className="mb-6">
-                    <h2>{period.name}</h2>
-                    <p>Short Forecast: {period.shortForecast}</p>
-                    <p>Detailed Forecast: {period.detailedForecast}</p>
+                <div key={index} className="mb-6 grid grid-flow-row">
+                    <p>{period.startTime}</p>
                     <p>
-                        Temperature: {period.temperature}{" "}
-                        <span className={montserrat.className}>{period.temperatureUnit}</span>
+                        {getWeatherEmoji(period.shortForecast, period.isDaytime)}{" "}
+                        {period.shortForecast}
                     </p>
                     <p>
-                        Wind: {period.windSpeed} {period.windDirection}
+                        {period.temperature}{" "}
+                        <span>{period.temperatureUnit}</span>
                     </p>
-                    <p>Daytime: {period.isDaytime ? "Yes" : "No"}</p>
-                    <p>
-                        Start Time:{" "}
-                        {new Date(period.startTime).toLocaleString()}
-                    </p>
-                    <p>End Time: {new Date(period.endTime).toLocaleString()}</p>
                 </div>
             ))}
         </div>
