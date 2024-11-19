@@ -5,11 +5,13 @@ export interface DailyForecastType {
     temperature: number;
     shortForecast: string;
     isDaytime: boolean;
+    detailedForecast: string;
 }
 
 export interface ProcessedDailyForecast {
     day: string;
     shortForecast: string;
+    detailedForecast: string;
     isDaytime: boolean;
     high: number;
     low: number;
@@ -25,6 +27,7 @@ export interface HourlyForecastType {
 
 // Define the type for observation data
 export interface ObservationType {
+    textDescription: string;
     temperature: number;
     feelsLike: number;
     humidity: number;
@@ -63,6 +66,7 @@ export interface ObservationStationsData {
 
 export interface ObservationsData {
     properties: {
+        textDescription: string;
         temperature: { value: number };
         heatIndex: { value: number | null };
         windChill: { value: number | null };

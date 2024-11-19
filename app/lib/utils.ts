@@ -105,6 +105,7 @@ export const processDailyForecasts = (periods: DailyForecastType[]): ProcessedDa
         processedForecasts.push({
             day,
             shortForecast: dayPeriod.shortForecast,
+            detailedForecast: dayPeriod.detailedForecast,
             isDaytime: dayPeriod.isDaytime,
             high,
             low,

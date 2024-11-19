@@ -95,6 +95,7 @@ const fetchWeatherData = async () => {
 
         const obserProps = observationsData.properties;
         const observations: ObservationType = {
+            textDescription: obserProps.textDescription,
             temperature: celsiusToFahrenheit(obserProps.temperature.value),
             feelsLike: calculateFeelsLike(
                 celsiusToFahrenheit(obserProps.temperature.value),
@@ -117,6 +118,7 @@ const fetchWeatherData = async () => {
             dailyForecasts: [],
             hourlyForecast: [],
             observations: {
+                textDescription: "",
                 temperature: 0,
                 feelsLike: 0,
                 humidity: 0,
