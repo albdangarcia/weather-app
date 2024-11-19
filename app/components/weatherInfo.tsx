@@ -1,6 +1,9 @@
 import { fetchWeatherData } from "../lib/data/weather";
 import { montserrat } from "../fonts/fonts";
-import { getWeatherEmoji } from "../lib/utils";
+// import { getWeatherEmoji } from "../lib/utils";
+import Image from "next/image";
+import { getWeatherEmoji } from "./WeatherIcons";
+
 
 const WeatherInfo = async () => {
     // Fetch the weather data
@@ -9,6 +12,13 @@ const WeatherInfo = async () => {
 
     return (
         <div>
+            <Image
+              className="dark:invert"
+              src="/weatherIcons/cloudy.svg"
+              alt="Weather icon"
+              width={20}
+              height={20}
+            />
             <h1 className="font-bold text-xl">Current Observations</h1>
             <div>
                 <p>Temperature: {observations.temperature} °F</p>
@@ -26,12 +36,12 @@ const WeatherInfo = async () => {
                         className="grid grid-cols-3 justify-between"
                     >
                         <p className="font-medium">{forecast.day}</p>
-                        <p className="text-center">
-                            {getWeatherEmoji(
-                                forecast.shortForecast,
-                                forecast.isDaytime
-                            )}{" "}
-                            {forecast.shortForecast}
+                        <p className="flex items-center justify-center">
+                                {getWeatherEmoji(
+                                    forecast.shortForecast,
+                                    forecast.isDaytime
+                                )}{" "}
+                            {/* {forecast.shortForecast} */}
                         </p>
                         <div className="flex space-x-2 justify-center">
                             <p className="w-12 text-left">{forecast.low}°</p>

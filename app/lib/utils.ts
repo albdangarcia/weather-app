@@ -1,4 +1,5 @@
 import { DailyForecastType, ProcessedDailyForecast } from "./types";
+import Image from "next/image";
 
 // Function to calculate the "feels like" temperature
 export const calculateFeelsLike = (
@@ -48,30 +49,30 @@ export const formatTime = (dateString: string): string => {
 };
 
 // Function to map shortForecast to emojis
-export const getWeatherEmoji = (shortForecast: string, isDaytime: boolean): string => {
-    const forecast = shortForecast.toLowerCase();
-    if (forecast.includes("sunny") || (forecast.includes("clear") && isDaytime)) {
-        return "☀️";
-    } else if (forecast.includes("clear") && !isDaytime) {
-        return "🌙";
-    } else if (forecast.includes("mostly sunny")) {
-        return "🌤️";
-    } else if (forecast.includes("partly cloudy")) {
-        return "⛅️";
-    } else if (forecast.includes("cloudy")) {
-        return "☁️";
-    } else if (forecast.includes("rain")) {
-        return "🌧️";
-    } else if (forecast.includes("snow")) {
-        return "❄️";
-    } else if (forecast.includes("thunderstorm")) {
-        return "⛈️";
-    } else if (forecast.includes("fog")) {
-        return "🌫️";
-    } else {
-        return "🌡️"; // Default emoji for other conditions
-    }
-};
+// export const getWeatherEmoji = (shortForecast: string, isDaytime: boolean): string => {
+//     const forecast = shortForecast.toLowerCase();
+//     if (forecast.includes("sunny") || (forecast.includes("clear") && isDaytime)) {
+//         return "☀️";
+//     } else if (forecast.includes("clear") && !isDaytime) {
+//         return "🌙";
+//     } else if (forecast.includes("mostly sunny")) {
+//         return "🌤️";
+//     } else if (forecast.includes("partly cloudy")) {
+//         return "⛅️";
+//     } else if (forecast.includes("cloudy")) {
+//         return "☁️";
+//     } else if (forecast.includes("rain")) {
+//         return "🌧️";
+//     } else if (forecast.includes("snow")) {
+//         return "❄️";
+//     } else if (forecast.includes("thunderstorm")) {
+//         return "⛈️";
+//     } else if (forecast.includes("fog")) {
+//         return "🌫️";
+//     } else {
+//         return "🌡️"; // Default emoji for other conditions
+//     }
+// };
 
 // Function to process daily forecasts
 export const processDailyForecasts = (periods: DailyForecastType[]): ProcessedDailyForecast[] => {

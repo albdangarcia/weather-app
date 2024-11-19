@@ -82,7 +82,6 @@ const fetchWeatherData = async () => {
 
         // Process the data
         const dailyForecasts = processDailyForecasts(forecastDailyData.properties.periods);
-        console.log(forecastDailyData.properties.periods);
 
         const hourlyForecast = forecastHourlyData.properties.periods.map(
             (period: HourlyForecastType) => ({
