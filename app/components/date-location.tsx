@@ -1,3 +1,5 @@
+import { openSans } from "../fonts/fonts";
+
 const DateLocation = () => {
     const currentDate = new Date();
     const options: Intl.DateTimeFormatOptions = {
@@ -7,7 +9,7 @@ const DateLocation = () => {
     const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
     return (
-        <div className="flex items-center justify-center flex-col font-bold mt-9">
+        <div className={`flex items-center justify-center flex-col font-bold mt-9 ${openSans.className}`}>
             <p>{formattedDate}</p>
             <p className="bg-black rounded py-1.5 px-4 text-[#FAE262]">New York City, NY</p>
         </div>

@@ -1,57 +1,99 @@
+import { openSans } from "../fonts/fonts";
 import { fetchWeatherData } from "../lib/data/weather";
 import { getWeatherEmoji } from "./WeatherIcons";
 import TemperatureSummary from "./temp-summary";
+import Image from "next/image";
 
 const WeatherInfo = async () => {
     // Fetch the weather data
     const { dailyForecasts, hourlyForecast, observations } =
         await fetchWeatherData();
 
+    const observationList = [
+        {
+            label: "Humidity",
+            icon: "/weatherIcons/humidity.svg",
+            value: `${observations.humidity}%`,
+        },
+        {
+            label: "Visibility",
+            icon: "/weatherIcons/visibility.svg",
+            value: `${observations.visibility} mi`,
+        },
+        {
+            label: "Pressure",
+            icon: "/weatherIcons/pressure.svg",
+            value: `${observations.pressure} inHg`,
+        },
+    ];
+
     return (
         <div>
             <TemperatureSummary
-                temperature={observations.temperature}
-                description={observations.textDescription}
+                temperature={hourlyForecast[0].temperature}
+                description={hourlyForecast[0].shortForecast}
                 detailedForecast={dailyForecasts[0].detailedForecast}
             />
-            <div className="grid grid-cols-2">
-                <div>
+            <div
+                className={`${openSans.className} grid md:grid-cols-2 grid-cols-1 w-[24rem] md:w-[48rem] mx-auto gap-y-6`}
+            >
+                {/* left col */}
+                <div className="grid grid-cols-1 gap-y-6">
                     {/* hourly forecast */}
-                    <h1 className="font-bold text-xl">Hourly Forecast</h1>
-                    {hourlyForecast.map((period, index) => (
-                        <div key={index} className="mb-6 grid grid-flow-row">
-                            <p>{period.startTime}</p>
-                            <p>
-                                {getWeatherEmoji(
-                                    period.shortForecast,
-                                    period.isDaytime
-                                )}{" "}
-                                {period.shortForecast}
-                            </p>
-                            <p>
-                                {period.temperature}{" "}
-                                <span>{period.temperatureUnit}</span>
-                            </p>
-                        </div>
-                    ))}
+                    <div className={`flex overflow-x-auto text-sm`}>
+                        {hourlyForecast.map((period, index) => (
+                            <div
+                                key={index}
+                                className="text-center flex-shrink-0 w-16 space-y-1"
+                            >
+                                <p className="font-medium">
+                                    {period.startTime}
+                                </p>
+                                <p className="flex items-center justify-center">
+                                    {getWeatherEmoji(
+                                        period.shortForecast,
+                                        period.isDaytime
+                                    )}
+                                </p>
+                                <p className="font-semibold">
+                                    {period.temperature}°
+                                </p>
+                            </div>
+                        ))}
+                    </div>
 
                     {/* forecast observations */}
-                    <h1 className="font-bold text-xl">Current Observations</h1>
-                    <div>
-                        <p>{observations.textDescription}</p>
-                        <p>{observations.temperature} °F</p>
-                        <p>Feels Like: {observations.feelsLike} °F</p>
-                        <p>Humidity: {observations.humidity} %</p>
-                        <p>Visibility: {observations.visibility} meters</p>
-                        <p>Pressure: {observations.pressure} inHg</p>
+                    <div className="bg-black py-4 rounded text-[#FAE262] grid grid-cols-3">
+                        {observationList.map((observation, index) => (
+                            <div
+                                key={index}
+                                className="text-center space-y-1 text-sm"
+                            >
+                                <Image
+                                    className="flex mx-auto"
+                                    src={observation.icon}
+                                    alt={observation.label}
+                                    width={35}
+                                    height={35}
+                                />
+                                <p className="font-medium">
+                                    {observation.label}
+                                </p>
+                                <p className="font-semibold">
+                                    {observation.value}
+                                </p>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
-                {/* daily forecast  */}
-                <div>
-                    <h1 className="font-bold text-xl">Daily Forecast</h1>
-                    <div className="">
-                        {dailyForecasts.map((forecast, index) => (
+                {/* right col */}
+                <div className="w-48 mx-auto">
+                    {/* daily forecast */}
+                    <h1 className="font-semibold border-b border-black mb-2">Daily Forecast</h1>
+                    <div className="grid gap-y-1">
+                        {/* start from index 1 to skipt the today forecast */}
+                        {dailyForecasts.slice(1).map((forecast, index) => (
                             <div
                                 key={index}
                                 className="grid grid-cols-3 justify-between"
@@ -61,8 +103,7 @@ const WeatherInfo = async () => {
                                     {getWeatherEmoji(
                                         forecast.shortForecast,
                                         forecast.isDaytime
-                                    )}{" "}
-                                    {/* {forecast.shortForecast} */}
+                                    )}
                                 </p>
                                 <div className="flex space-x-2 justify-center">
                                     <p className="w-12 text-left">

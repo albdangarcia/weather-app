@@ -27,8 +27,6 @@ export interface HourlyForecastType {
 
 // Define the type for observation data
 export interface ObservationType {
-    textDescription: string;
-    temperature: number;
     feelsLike: number;
     humidity: number;
     visibility: number;

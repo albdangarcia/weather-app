@@ -82,7 +82,7 @@ const fetchWeatherData = async () => {
 
         // Process the data
         const dailyForecasts = processDailyForecasts(forecastDailyData.properties.periods);
-
+        
         const hourlyForecast = forecastHourlyData.properties.periods.map(
             (period: HourlyForecastType) => ({
                 startTime: formatTime(period.startTime),
@@ -92,11 +92,9 @@ const fetchWeatherData = async () => {
                 shortForecast: period.shortForecast,
             })
         ).slice(0, 24); // Limit to the first 24 hours
-
+        
         const obserProps = observationsData.properties;
         const observations: ObservationType = {
-            textDescription: obserProps.textDescription,
-            temperature: celsiusToFahrenheit(obserProps.temperature.value),
             feelsLike: calculateFeelsLike(
                 celsiusToFahrenheit(obserProps.temperature.value),
                 obserProps.heatIndex.value !== null

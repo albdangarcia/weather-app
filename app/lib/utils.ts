@@ -34,7 +34,10 @@ export const metersToMiles = (meters: number): number => {
 };
 
 // Generic helper function to handle API responses with proper typing
-export const handleApiResponse = async <T>(response: Response, errorMessage: string): Promise<T> => {
+export const handleApiResponse = async <T>(
+    response: Response,
+    errorMessage: string
+): Promise<T> => {
     if (!response.ok) {
         throw new Error(`${errorMessage}: ${response.statusText}`);
     }
@@ -45,7 +48,7 @@ export const handleApiResponse = async <T>(response: Response, errorMessage: str
 // Function to format time to "h A" (e.g., "5 PM")
 export const formatTime = (dateString: string): string => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: 'numeric', hour12: true });
+    return date.toLocaleTimeString([], { hour: "numeric", hour12: true });
 };
 
 // Function to map shortForecast to emojis
@@ -75,32 +78,43 @@ export const formatTime = (dateString: string): string => {
 // };
 
 // Function to process daily forecasts
-export const processDailyForecasts = (periods: DailyForecastType[]): ProcessedDailyForecast[] => {
+export const processDailyForecasts = (
+    periods: DailyForecastType[]
+): ProcessedDailyForecast[] => {
     const processedForecasts: ProcessedDailyForecast[] = [];
-    
-    // Remove the first period, assuming it refers to the current day (Tonight, Overnight, etc.)
+
+    // Remove the first period (Tonight, Overnight, etc.)
     if (periods.length > 0) {
-        periods.shift();  // Remove the first period
+        let period = periods.shift(); // Remove the first period
+        if (period) {
+            processedForecasts.push({
+                day: period.name,
+                shortForecast: period.shortForecast,
+                detailedForecast: period.detailedForecast,
+                isDaytime: period.isDaytime,
+                high: period.temperature,
+                low: period.temperature,
+            });
+        }
     }
-    
+
     for (let i = 0; i < periods.length; i += 2) {
         const dayPeriod = periods[i];
         const nightPeriod = periods[i + 1];
-        
+
         if (!dayPeriod) continue;
-        
+
         // Extract the day name from the full name (e.g., "Tuesday" -> "Tue")
-        let day = dayPeriod.name.split(' ')[0].slice(0, 3);
-        
-        // Replace the first day name with "Today"
-        if (i === 0) {
-            day = 'Today';
-        }
-        
+        let day = dayPeriod.name.split(" ")[0].slice(0, 3);
+
         // Calculate high and low temperatures
-        const high = nightPeriod ? Math.max(dayPeriod.temperature, nightPeriod.temperature) : dayPeriod.temperature;
-        const low = nightPeriod ? Math.min(dayPeriod.temperature, nightPeriod.temperature) : dayPeriod.temperature;
-        
+        const high = nightPeriod
+            ? Math.max(dayPeriod.temperature, nightPeriod.temperature)
+            : dayPeriod.temperature;
+        const low = nightPeriod
+            ? Math.min(dayPeriod.temperature, nightPeriod.temperature)
+            : dayPeriod.temperature;
+
         // Day temperature is the high, night temperature is the low
         processedForecasts.push({
             day,
@@ -111,6 +125,6 @@ export const processDailyForecasts = (periods: DailyForecastType[]): ProcessedDa
             low,
         });
     }
-    
+
     return processedForecasts;
 };

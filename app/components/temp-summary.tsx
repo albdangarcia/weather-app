@@ -13,7 +13,7 @@ const TemperatureSummary = ({
     detailedForecast,
 }: Props) => {
     return (
-        <div className="flex items-center justify-center mt-20">
+        <div className="flex items-center justify-center mt-20 mb-[3rem]">
             <div className="w-96 text-center relative">
                 <div className="relative">
                     <span className="rounded-full h-[16rem] w-[16rem] bg-[#FFB405] absolute z-0 left-[6rem] top-0" />
@@ -28,7 +28,7 @@ const TemperatureSummary = ({
                 >
                     {description}
                 </p>
-                <p className={`${openSans.className}`}>{detailedForecast}</p>
+                <p className={`${openSans.className} text-sm`}>{detailedForecast}</p>
             </div>
         </div>
     );

@@ -44,7 +44,7 @@ export const getWeatherEmoji = (shortForecast: string, isDaytime: boolean) => {
 
     return (
         <Image
-            className="dark:invert"
+            className="brightness-0"
             src={iconSrc}
             alt="Weather icon"
             width={20}
