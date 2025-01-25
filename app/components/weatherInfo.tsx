@@ -1,13 +1,15 @@
 import { openSans } from "../fonts/fonts";
 import { fetchWeatherData } from "../lib/data/weather";
+import { CoordinatesTypes, DailyForecastType, HourlyForecastType } from "../lib/types";
 import { getWeatherEmoji } from "./WeatherIcons";
 import TemperatureSummary from "./temp-summary";
 import Image from "next/image";
 
-const WeatherInfo = async () => {
+const WeatherInfo = async ({ latitude, longitude }: CoordinatesTypes) => {
+
     // Fetch the weather data
     const { dailyForecasts, hourlyForecast, observations } =
-        await fetchWeatherData();
+        await fetchWeatherData({ latitude, longitude });
 
     const observationList = [
         {
@@ -90,7 +92,9 @@ const WeatherInfo = async () => {
                 {/* right col */}
                 <div className="w-48 mx-auto">
                     {/* daily forecast */}
-                    <h1 className="font-semibold border-b border-black mb-2">Daily Forecast</h1>
+                    <h1 className="font-semibold border-b border-black mb-2">
+                        Daily Forecast
+                    </h1>
                     <div className="grid gap-y-1">
                         {/* start from index 1 to skipt the today forecast */}
                         {dailyForecasts.slice(1).map((forecast, index) => (

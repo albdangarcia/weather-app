@@ -1,4 +1,5 @@
 import {
+    CoordinatesTypes,
     ForecastData,
     HourlyForecastData,
     HourlyForecastType,
@@ -25,10 +26,13 @@ const API_CONFIG = {
 } as const;
 
 // Function to fetch weather data
-const fetchWeatherData = async () => {
+const fetchWeatherData = async ({
+    latitude = "40.7128",
+    longitude = "-74.0060",
+}: CoordinatesTypes) => {
     try {
         // Initial point data fetch
-        const pointUrl = `${API_CONFIG.baseUrl}/points/40.7128,-74.0060`;
+        const pointUrl = `${API_CONFIG.baseUrl}/points/${latitude},${longitude}`;
         const pointData = await handleApiResponse<PointData>(
             await fetch(pointUrl, {
                 headers: API_CONFIG.headers,
@@ -81,18 +85,20 @@ const fetchWeatherData = async () => {
         );
 
         // Process the data
-        const dailyForecasts = processDailyForecasts(forecastDailyData.properties.periods);
-        
-        const hourlyForecast = forecastHourlyData.properties.periods.map(
-            (period: HourlyForecastType) => ({
+        const dailyForecasts = processDailyForecasts(
+            forecastDailyData.properties.periods
+        );
+
+        const hourlyForecast = forecastHourlyData.properties.periods
+            .map((period: HourlyForecastType) => ({
                 startTime: formatTime(period.startTime),
                 isDaytime: period.isDaytime,
                 temperature: period.temperature,
                 temperatureUnit: period.temperatureUnit,
                 shortForecast: period.shortForecast,
-            })
-        ).slice(0, 24); // Limit to the first 24 hours
-        
+            }))
+            .slice(0, 24); // Limit to the first 24 hours
+
         const obserProps = observationsData.properties;
         const observations: ObservationType = {
             feelsLike: calculateFeelsLike(

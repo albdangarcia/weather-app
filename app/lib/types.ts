@@ -73,3 +73,8 @@ export interface ObservationsData {
         barometricPressure: { value: number };
     };
 }
+
+export interface CoordinatesTypes {
+    latitude: string | string[] | undefined;
+    longitude: string | string[] | undefined;
+}
