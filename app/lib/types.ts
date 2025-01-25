@@ -75,6 +75,8 @@ export interface ObservationsData {
 }
 
 export interface CoordinatesTypes {
-    latitude: string | string[] | undefined;
-    longitude: string | string[] | undefined;
+    latitude: string | undefined;
+    longitude: string | undefined;
+    // latitude: string | string[] | undefined;
+    // longitude: string | string[] | undefined;
 }

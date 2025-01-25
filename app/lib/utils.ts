@@ -1,3 +1,4 @@
+import { cities } from "./constants";
 import { DailyForecastType, ProcessedDailyForecast } from "./types";
 import Image from "next/image";
 
@@ -128,3 +129,13 @@ export const processDailyForecasts = (
 
     return processedForecasts;
 };
+
+// Function to get city by coordinates
+export const getCityByCoordinates = (lat: string, lon: string): string | undefined =>{
+    for (const cityObj of cities) {
+        if (cityObj.lat === lat && cityObj.long === lon) {
+            return cityObj.city;
+        }
+    }
+    return undefined;
+}

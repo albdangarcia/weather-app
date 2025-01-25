@@ -1,30 +1,10 @@
 "use client";
 import { useState } from "react";
 import { openSans } from "../fonts/fonts";
+import { cities } from "../lib/constants";
 
 const Nav = () => {
-    const cities = [
-        { city: "New York, NY", lat: 40.7128, long: -74.006 },
-        { city: "Los Angeles, CA", lat: 34.0522, long: -118.2437 },
-        { city: "Chicago, IL", lat: 41.8781, long: -87.6298 },
-        { city: "Houston, TX", lat: 29.7604, long: -95.3698 },
-        { city: "Phoenix, AZ", lat: 33.4484, long: -112.074 },
-        { city: "Philadelphia, PA", lat: 39.9526, long: -75.1652 },
-        { city: "San Antonio, TX", lat: 29.4241, long: -98.4936 },
-        { city: "San Diego, CA", lat: 32.7157, long: -117.1611 },
-        { city: "Dallas, TX", lat: 32.7767, long: -96.797 },
-        { city: "San Jose, CA", lat: 37.3382, long: -121.8863 },
-        { city: "Austin, TX", lat: 30.2672, long: -97.7431 },
-        { city: "Jacksonville, FL", lat: 30.3322, long: -81.6557 },
-        { city: "Fort Worth, TX", lat: 32.7555, long: -97.3308 },
-        { city: "Columbus, OH", lat: 39.9612, long: -82.9988 },
-        { city: "Charlotte, NC", lat: 35.2271, long: -80.8431 },
-        { city: "San Francisco, CA", lat: 37.7749, long: -122.4194 },
-        { city: "Indianapolis, IN", lat: 39.7684, long: -86.1581 },
-        { city: "Seattle, WA", lat: 47.6062, long: -122.3321 },
-        { city: "Denver, CO", lat: 39.7392, long: -104.9903 },
-        { city: "Washington, DC", lat: 38.9072, long: -77.0369 },
-    ];
+    
     // State to show/hide navigation bar
     const [isNavOpen, setIsNavOpen] = useState(false);
 
