@@ -1,23 +1,31 @@
 import { openSans } from "../fonts/fonts";
-import { CoordinatesTypes } from "../lib/types";
-import { getCityByCoordinates } from "../lib/utils";
 
-const DateLocation = ({
-    latitude = "40.7128",
-    longitude = "-74.0060",
-}: CoordinatesTypes) => {
+interface Props {
+    cityName: string | undefined;
+}
+
+const DateLocation = ({ cityName }: Props) => {
+    // Getting the current date
     const currentDate = new Date();
+
+    // Options for formatting the date
     const options: Intl.DateTimeFormatOptions = {
         weekday: "long",
-        // day: "numeric",
     };
-    const cityName = getCityByCoordinates(latitude, longitude);
+
+    // Formatting the current date to a readable string
     const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
     return (
-        <div className={`flex items-center justify-center flex-col font-bold mt-5 ${openSans.className}`}>
+        <div
+            className={`flex items-center justify-center flex-col font-bold mt-5 ${openSans.className}`}
+        >
+            {/* Displaying the formatted date */}
             <p>{formattedDate}</p>
-            <p className="bg-black rounded py-1.5 px-4 text-[#FAE262]">{cityName}</p>
+            {/* Displaying the city name or 'Unknown' if cityName is undefined */}
+            <p className="bg-black rounded py-1.5 px-4 text-[#FAE262]">
+                {cityName ? cityName : "Unknown"}
+            </p>
         </div>
     );
 };

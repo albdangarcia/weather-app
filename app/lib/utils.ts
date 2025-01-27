@@ -1,6 +1,9 @@
 import { cities } from "./constants";
-import { DailyForecastType, ProcessedDailyForecast } from "./types";
-import Image from "next/image";
+import {
+    CoordinatesTypes,
+    DailyForecastType,
+    ProcessedDailyForecast,
+} from "./types";
 
 // Function to calculate the "feels like" temperature
 export const calculateFeelsLike = (
@@ -51,32 +54,6 @@ export const formatTime = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: "numeric", hour12: true });
 };
-
-// Function to map shortForecast to emojis
-// export const getWeatherEmoji = (shortForecast: string, isDaytime: boolean): string => {
-//     const forecast = shortForecast.toLowerCase();
-//     if (forecast.includes("sunny") || (forecast.includes("clear") && isDaytime)) {
-//         return "☀️";
-//     } else if (forecast.includes("clear") && !isDaytime) {
-//         return "🌙";
-//     } else if (forecast.includes("mostly sunny")) {
-//         return "🌤️";
-//     } else if (forecast.includes("partly cloudy")) {
-//         return "⛅️";
-//     } else if (forecast.includes("cloudy")) {
-//         return "☁️";
-//     } else if (forecast.includes("rain")) {
-//         return "🌧️";
-//     } else if (forecast.includes("snow")) {
-//         return "❄️";
-//     } else if (forecast.includes("thunderstorm")) {
-//         return "⛈️";
-//     } else if (forecast.includes("fog")) {
-//         return "🌫️";
-//     } else {
-//         return "🌡️"; // Default emoji for other conditions
-//     }
-// };
 
 // Function to process daily forecasts
 export const processDailyForecasts = (
@@ -131,11 +108,14 @@ export const processDailyForecasts = (
 };
 
 // Function to get city by coordinates
-export const getCityByCoordinates = (lat: string, lon: string): string | undefined =>{
+export const getCityByCoordinates = ({
+    latitude = "40.7128",
+    longitude = "-74.006",
+}: CoordinatesTypes): string | undefined => {
     for (const cityObj of cities) {
-        if (cityObj.lat === lat && cityObj.long === lon) {
+        if (cityObj.lat === latitude && cityObj.long === longitude) {
             return cityObj.city;
         }
     }
     return undefined;
-}
+};

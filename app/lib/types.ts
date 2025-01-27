@@ -24,6 +24,11 @@ export interface HourlyForecastType {
     temperatureUnit: string;
     shortForecast: string;
 }
+export interface observationListType {
+    label: string;
+    icon: string;
+    value: string;
+}
 
 // Define the type for observation data
 export interface ObservationType {
@@ -77,6 +82,4 @@ export interface ObservationsData {
 export interface CoordinatesTypes {
     latitude: string | undefined;
     longitude: string | undefined;
-    // latitude: string | string[] | undefined;
-    // longitude: string | string[] | undefined;
 }

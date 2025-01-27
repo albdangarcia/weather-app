@@ -1,33 +1,45 @@
 import { openSans } from "../fonts/fonts";
-import { fetchWeatherData } from "../lib/data/weather";
-import { CoordinatesTypes, DailyForecastType, HourlyForecastType } from "../lib/types";
+import {
+    HourlyForecastType,
+    observationListType,
+    ProcessedDailyForecast,
+} from "../lib/types";
 import { getWeatherEmoji } from "./WeatherIcons";
 import TemperatureSummary from "./temp-summary";
 import Image from "next/image";
 
-const WeatherInfo = async ({ latitude, longitude }: CoordinatesTypes) => {
+interface Props {
+    dailyForecasts: ProcessedDailyForecast[];
+    hourlyForecast: HourlyForecastType[];
+    observationList: observationListType[];
+}
 
-    // Fetch the weather data
-    const { dailyForecasts, hourlyForecast, observations } =
-        await fetchWeatherData({ latitude, longitude });
+const WeatherInfo = ({
+    dailyForecasts,
+    hourlyForecast,
+    observationList,
+}: Props) => {
+    // // Fetch the weather data
+    // const { dailyForecasts, hourlyForecast, observations } =
+    //     await fetchWeatherData({ latitude, longitude });
 
-    const observationList = [
-        {
-            label: "Humidity",
-            icon: "/weatherIcons/humidity.svg",
-            value: `${observations.humidity}%`,
-        },
-        {
-            label: "Visibility",
-            icon: "/weatherIcons/visibility.svg",
-            value: `${observations.visibility} mi`,
-        },
-        {
-            label: "Pressure",
-            icon: "/weatherIcons/pressure.svg",
-            value: `${observations.pressure} inHg`,
-        },
-    ];
+    // const observationList = [
+    //     {
+    //         label: "Humidity",
+    //         icon: "/weatherIcons/humidity.svg",
+    //         value: `${observations.humidity}%`,
+    //     },
+    //     {
+    //         label: "Visibility",
+    //         icon: "/weatherIcons/visibility.svg",
+    //         value: `${observations.visibility} mi`,
+    //     },
+    //     {
+    //         label: "Pressure",
+    //         icon: "/weatherIcons/pressure.svg",
+    //         value: `${observations.pressure} inHg`,
+    //     },
+    // ];
 
     return (
         <div>

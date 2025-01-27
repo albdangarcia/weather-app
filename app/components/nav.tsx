@@ -8,10 +8,23 @@ const Nav = () => {
     // State to show/hide navigation bar
     const [isNavOpen, setIsNavOpen] = useState(false);
 
+    // State to store the search query
+    const [searchQuery, setSearchQuery] = useState("");
+
     // Function to toggle show/hide navigation bar
     const toggleNav = () => {
         setIsNavOpen(!isNavOpen);
     };
+
+    // Function to handle search input change
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+    };
+
+    // Filtered cities based on search query
+    const filteredCities = cities.filter(city =>
+        city.city.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="relative">
@@ -64,13 +77,15 @@ const Nav = () => {
                         name="searchLocationCode"
                         className="bg-[#212121] mb-7 text-gray-300 rounded-sm w-full text-sm placeholder:text-gray-600 h-8 px-2 py-4 border border-[#3A3A3A] focus:border-gray-600 focus:outline-none"
                         placeholder="Search Location"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
                     />
                 </div>
 
                 {/* city list */}
-                <div className="">
+                <div className="overflow-y-auto max-h-[calc(100vh-200px)]">
                     <ul className="space-y-5">
-                        {cities.map((city) => (
+                        {filteredCities.map((city) => (
                             <li
                                 key={city.city}
                                 className="flex items-center justify-between"
@@ -81,22 +96,6 @@ const Nav = () => {
                                         {city.city}
                                     </a>
                                 </div>
-                                {/* remove city icon */}
-                                <button className="bg-gray-800 w-8 rounded-sm hover:bg-red-500">
-                                    <svg
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="#FFF"
-                                        className="size-6 mx-auto"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M8 12h8"
-                                        />
-                                    </svg>
-                                </button>
                             </li>
                         ))}
                     </ul>

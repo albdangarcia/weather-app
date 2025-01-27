@@ -3,6 +3,7 @@ import {
     ForecastData,
     HourlyForecastData,
     HourlyForecastType,
+    observationListType,
     ObservationsData,
     ObservationStationsData,
     ObservationType,
@@ -28,7 +29,7 @@ const API_CONFIG = {
 // Function to fetch weather data
 const fetchWeatherData = async ({
     latitude = "40.7128",
-    longitude = "-74.0060",
+    longitude = "-74.006",
 }: CoordinatesTypes) => {
     try {
         // Initial point data fetch
@@ -115,20 +116,31 @@ const fetchWeatherData = async ({
             pressure: pascalToInHg(obserProps.barometricPressure.value),
         };
 
-        return { dailyForecasts, hourlyForecast, observations };
+        const observationList: observationListType[] = [
+            {
+                label: "Humidity",
+                icon: "/weatherIcons/humidity.svg",
+                value: `${observations.humidity}%`,
+            },
+            {
+                label: "Visibility",
+                icon: "/weatherIcons/visibility.svg",
+                value: `${observations.visibility} mi`,
+            },
+            {
+                label: "Pressure",
+                icon: "/weatherIcons/pressure.svg",
+                value: `${observations.pressure} inHg`,
+            },
+        ];
+
+        return { dailyForecasts, hourlyForecast, observationList };
     } catch (error) {
         console.error("Weather data fetch error:", error);
         return {
             dailyForecasts: [],
             hourlyForecast: [],
-            observations: {
-                textDescription: "",
-                temperature: 0,
-                feelsLike: 0,
-                humidity: 0,
-                visibility: 0,
-                pressure: 0,
-            },
+            observationList: [],
         };
     }
 };
