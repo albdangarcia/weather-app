@@ -47,7 +47,7 @@ const Nav = () => {
 
             {/* navigation bar */}
             <div
-                className={`fixed z-10 top-0 left-0 bg-black pt-16 px-7 w-96 h-full ${
+                className={`fixed z-20 top-0 left-0 bg-black pt-16 px-7 w-96 h-full ${
                     openSans.className
                 } ${
                     isNavOpen ? "translate-x-0" : "-translate-x-full"
@@ -92,7 +92,7 @@ const Nav = () => {
                             >
                                 <div className="flex items-center space-x-4">
                                     <span className="bg-[#FAE262] w-[3px] h-10 rounded-sm" />
-                                    <a href={`?lat=${city.lat}&lon=${city.long}`} className="text-gray-200 text-sm font-semibold">
+                                    <a href={`?latitude=${city.lat}&longitude=${city.long}`} className="text-gray-200 text-sm font-semibold">
                                         {city.city}
                                     </a>
                                 </div>

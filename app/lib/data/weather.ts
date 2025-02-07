@@ -28,10 +28,16 @@ const API_CONFIG = {
 
 // Function to fetch weather data
 const fetchWeatherData = async ({
-    latitude = "40.7128",
-    longitude = "-74.006",
+    latitude,
+    longitude,
 }: CoordinatesTypes) => {
     try {
+        // Validate latitude and longitude
+        if (!latitude && !longitude) {
+            latitude = "40.7128";
+            longitude = "-74.006";
+        }
+
         // Initial point data fetch
         const pointUrl = `${API_CONFIG.baseUrl}/points/${latitude},${longitude}`;
         const pointData = await handleApiResponse<PointData>(
@@ -134,13 +140,17 @@ const fetchWeatherData = async ({
             },
         ];
 
+        // delay to simulate loading
+        // await new Promise((resolve) => setTimeout(resolve, 5000));
+
         return { dailyForecasts, hourlyForecast, observationList };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Weather data fetch error:", error);
         return {
             dailyForecasts: [],
             hourlyForecast: [],
             observationList: [],
+            errorMessage: error.message || "Failed to fetch weather data",
         };
     }
 };

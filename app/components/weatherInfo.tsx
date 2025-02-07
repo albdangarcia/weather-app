@@ -19,28 +19,6 @@ const WeatherInfo = ({
     hourlyForecast,
     observationList,
 }: Props) => {
-    // // Fetch the weather data
-    // const { dailyForecasts, hourlyForecast, observations } =
-    //     await fetchWeatherData({ latitude, longitude });
-
-    // const observationList = [
-    //     {
-    //         label: "Humidity",
-    //         icon: "/weatherIcons/humidity.svg",
-    //         value: `${observations.humidity}%`,
-    //     },
-    //     {
-    //         label: "Visibility",
-    //         icon: "/weatherIcons/visibility.svg",
-    //         value: `${observations.visibility} mi`,
-    //     },
-    //     {
-    //         label: "Pressure",
-    //         icon: "/weatherIcons/pressure.svg",
-    //         value: `${observations.pressure} inHg`,
-    //     },
-    // ];
-
     return (
         <div>
             <TemperatureSummary
