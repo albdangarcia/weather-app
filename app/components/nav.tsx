@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { openSans } from "../fonts/fonts";
 import { cities } from "../lib/constants";
 
 const Nav = () => {
-    
     // State to show/hide navigation bar
     const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -21,8 +20,31 @@ const Nav = () => {
         setSearchQuery(event.target.value);
     };
 
+    // Ref to the navigation element
+    const navRef = useRef<HTMLDivElement>(null);
+
+    // Function to handle clicks outside the navigation
+    const handleClickOutside = (event: MouseEvent) => {
+        if (navRef.current && !navRef.current.contains(event.target as Node)) {
+            setIsNavOpen(false);
+        }
+    };
+
+    // Use effect to add and remove event listener for clicks outside the navigation
+    useEffect(() => {
+        if (isNavOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isNavOpen]);
+
     // Filtered cities based on search query
-    const filteredCities = cities.filter(city =>
+    const filteredCities = cities.filter((city) =>
         city.city.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -52,6 +74,7 @@ const Nav = () => {
                 } ${
                     isNavOpen ? "translate-x-0" : "-translate-x-full"
                 } transition-transform duration-300 ease-in-out `}
+                ref={navRef}
             >
                 {/* close icon */}
                 <button onClick={toggleNav}>
@@ -92,7 +115,10 @@ const Nav = () => {
                             >
                                 <div className="flex items-center space-x-4">
                                     <span className="bg-[#FAE262] w-[3px] h-10 rounded-sm" />
-                                    <a href={`?latitude=${city.lat}&longitude=${city.long}`} className="text-gray-200 text-sm font-semibold">
+                                    <a
+                                        href={`?latitude=${city.lat}&longitude=${city.long}`}
+                                        className="text-gray-200 text-sm font-semibold"
+                                    >
                                         {city.city}
                                     </a>
                                 </div>
