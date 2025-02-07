@@ -69,7 +69,7 @@ const Nav = () => {
 
             {/* navigation bar */}
             <div
-                className={`fixed z-20 top-0 left-0 bg-black pt-16 px-7 w-96 h-full ${
+                className={`fixed z-20 top-0 left-0 bg-black pt-12 px-7 w-96 h-full ${
                     openSans.className
                 } ${
                     isNavOpen ? "translate-x-0" : "-translate-x-full"
