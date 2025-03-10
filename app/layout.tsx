@@ -16,6 +16,19 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Weather App",
   description: "A simple weather app",
+  creator: "Alberto Daniel Garcia",
+  keywords: [
+    "Weather",
+    "Weather App",
+    "Weather Forecast",
+    "Weather Information",
+    "Weather Data",
+    "Temperature",
+    "Humidity",
+    "Wind Speed",
+    "Sunrise",
+    "Sunset",
+  ],
 };
 
 export default function RootLayout({

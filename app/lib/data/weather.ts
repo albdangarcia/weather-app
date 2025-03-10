@@ -43,7 +43,8 @@ const fetchWeatherData = async ({
         const pointData = await handleApiResponse<PointData>(
             await fetch(pointUrl, {
                 headers: API_CONFIG.headers,
-                cache: "force-cache",
+                // cache: "force-cache",
+                next: { revalidate: 600 },
             }),
             "Error fetching point data"
         );
@@ -87,6 +88,7 @@ const fetchWeatherData = async ({
             await fetch(observationsUrl, {
                 headers: API_CONFIG.headers,
                 // cache: "force-cache",
+                next: { revalidate: 600 },
             }),
             "Error fetching observations data"
         );

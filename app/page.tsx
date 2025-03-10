@@ -4,6 +4,7 @@ import Nav from "./components/nav";
 import WeatherInfo from "./components/weatherInfo";
 import { fetchWeatherData } from "./lib/data/weather";
 import { getCityByCoordinates } from "./lib/utils";
+import GitHubIcon from "./components/github-Icon";
 
 interface Props {
     searchParams: SearchParamsType;
@@ -27,6 +28,8 @@ const Home = async ({ searchParams }: Props) => {
     const cityName = getCityByCoordinates({ latitude, longitude });
 
     return (
+        <>
+            <GitHubIcon />
         <div className="mb-20">
             <Nav />
             <DateLocation cityName={cityName} />
@@ -36,6 +39,7 @@ const Home = async ({ searchParams }: Props) => {
                 observationList={observationList}
             />
         </div>
+        </>
     );
 };
 
