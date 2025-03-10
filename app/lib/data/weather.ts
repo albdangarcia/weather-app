@@ -144,13 +144,14 @@ const fetchWeatherData = async ({
         // await new Promise((resolve) => setTimeout(resolve, 5000));
 
         return { dailyForecasts, hourlyForecast, observationList };
-    } catch (error: any) {
-        console.error("Weather data fetch error:", error);
+    } catch (error: unknown) {
+        const err = error as Error;
+        console.error("Weather data fetch error:", err);
         return {
             dailyForecasts: [],
             hourlyForecast: [],
             observationList: [],
-            errorMessage: error.message || "Failed to fetch weather data",
+            errorMessage: err.message || "Failed to fetch weather data",
         };
     }
 };

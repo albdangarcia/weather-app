@@ -63,7 +63,7 @@ export const processDailyForecasts = (
 
     // Remove the first period (Tonight, Overnight, etc.)
     if (periods.length > 0) {
-        let period = periods.shift(); // Remove the first period
+        const period = periods.shift(); // Remove the first period
         if (period) {
             processedForecasts.push({
                 day: period.name,
@@ -83,7 +83,7 @@ export const processDailyForecasts = (
         if (!dayPeriod) continue;
 
         // Extract the day name from the full name (e.g., "Tuesday" -> "Tue")
-        let day = dayPeriod.name.split(" ")[0].slice(0, 3);
+        const day = dayPeriod.name.split(" ")[0].slice(0, 3);
 
         // Calculate high and low temperatures
         const high = nightPeriod

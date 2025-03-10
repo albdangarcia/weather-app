@@ -12,7 +12,7 @@ interface Props {
 type SearchParamsType = Promise<{ [key: string]: string | undefined }>;
 
 const Home = async ({ searchParams }: Props) => {
-    let { latitude, longitude } = await searchParams;
+    const { latitude, longitude } = await searchParams;
 
     // Fetch the weather data
     const { dailyForecasts, hourlyForecast, observationList, errorMessage } =
