@@ -93,7 +93,11 @@ To run the app locally, follow these steps:
 
 ## TODO
 
-- [] Add Night Mode.
+- [ ] Add Night Mode.
+
+## Credits
+- [NOAA National Weather Service API](https://www.weather.gov/documentation/services-web-api)
+- SVG Icons from [svgrepo](https://www.svgrepo.com/)
 
 ## License
 
