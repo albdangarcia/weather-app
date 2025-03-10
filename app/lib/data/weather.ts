@@ -86,7 +86,7 @@ const fetchWeatherData = async ({
         const observationsData = await handleApiResponse<ObservationsData>(
             await fetch(observationsUrl, {
                 headers: API_CONFIG.headers,
-                cache: "force-cache",
+                // cache: "force-cache",
             }),
             "Error fetching observations data"
         );
