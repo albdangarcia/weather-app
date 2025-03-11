@@ -94,6 +94,7 @@ To run the app locally, follow these steps:
 ## TODO
 
 - [ ] Add Night Mode.
+- [ ] Add Google Maps API for location search and autocomplete.
 
 ## Credits
 - [NOAA National Weather Service API](https://www.weather.gov/documentation/services-web-api)

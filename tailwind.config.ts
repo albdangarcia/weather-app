@@ -11,6 +11,14 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+      }
+    },
+    keyframes: {
+      // shimmer animation for skeleton loading
+      shimmer: {
+        '100%': {
+          transform: 'translateX(100%)',
+        },
       },
     },
   },

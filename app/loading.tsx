@@ -1,21 +1,25 @@
+// Loading animation
+const shimmer =
+  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
+
 const loading = () => {
     return (
-        <div className="top-7 left-0 w-full h-full absolute">
+        <div className="absolute top-7 left-0 w-full h-full">
             <div className="flex items-center justify-center flex-col mt-5 mb-[3rem]">
                 {/* date */}
-                <p className="h-5 w-16 bg-white/60 mb-0.5 rounded animate-pulse" />
+                <p className={`${shimmer} relative overflow-hidden h-5 w-16 bg-slate-200 mb-0.5 rounded`} />
                 {/* location */}
                 <div className="bg-black w-36 h-8 rounded flex items-center justify-center">
-                    <p className="bg-slate-700 rounded h-4 w-28 animate-pulse" />
+                    <p className={`${shimmer} relative overflow-hidden bg-slate-700 rounded h-4 w-28`} />
                 </div>
                 {/* main temp */}
-                <div className="mt-20 mb-[2.7rem] w-80 bg-white/60 h-[16rem] rounded animate-pulse" />
-                <div className="w-40 h-6 bg-white/60 rounded mb-6 animate-pulse" />
+                <div className={`${shimmer} relative overflow-hidden mt-20 mb-[2.7rem] w-80 bg-slate-200 h-[16rem] rounded`} />
+                <div className={`${shimmer} relative overflow-hidden w-40 h-6 bg-slate-200 rounded mb-6`} />
                 {/* short description */}
                 <div>
-                    <div className="h-2 mb-1 w-80 bg-white/60 rounded mx-auto animate-pulse" />
-                    <div className="h-2 mb-1 w-72 bg-white/60 rounded mx-auto animate-pulse" />
-                    <div className="h-2 w-64 bg-white/60 rounded mx-auto animate-pulse" />
+                    <div className={`${shimmer} relative overflow-hidden h-2 mb-1 w-80 bg-slate-200 rounded mx-auto`} />
+                    <div className={`${shimmer} relative overflow-hidden h-2 mb-1 w-72 bg-slate-200 rounded mx-auto`} />
+                    <div className={`${shimmer} relative overflow-hidden h-2 w-64 bg-slate-200 rounded mx-auto`} />
                 </div>
             </div>
             <div className="grid md:grid-cols-2 grid-cols-1 w-[24rem] md:w-[48rem] mx-auto gap-y-6">
@@ -28,9 +32,9 @@ const loading = () => {
                                 key={index}
                                 className="flex flex-col items-center"
                             >
-                                <div className="bg-white/60 animate-pulse h-3 w-full rounded" />
-                                <div className="bg-white/60 animate-pulse h-6 w-6 mt-2 rounded-full" />
-                                <div className="bg-white/60 animate-pulse h-3 w-6 mt-1 rounded" />
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-200 h-3 w-full rounded`} />
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-200 h-6 w-6 mt-2 rounded-full`} />
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-200 h-3 w-6 mt-1 rounded`} />
                             </div>
                         ))}
                     </div>
@@ -41,9 +45,9 @@ const loading = () => {
                                 key={index}
                                 className="flex flex-col items-center justify-center space-y-1 text-sm"
                             >
-                                <div className="bg-slate-700 animate-pulse h-6 w-6 rounded-full mb-2" />
-                                <div className="bg-slate-700 animate-pulse h-3 w-16 rounded" />
-                                <div className="bg-slate-700 animate-pulse h-3 w-16 rounded" />
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-700 h-6 w-6 rounded-full mb-2`} />
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-700 h-3 w-16 rounded`} />
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-700 h-3 w-16 rounded`} />
                             </div>
                         ))}
                     </div>
@@ -54,19 +58,19 @@ const loading = () => {
                     {/* daily forecast */}
                     <h1 className="border-b border-black mb-2">
                         {/* Daily Forecast */}
-                        <div className="bg-white/60 mb-2 h-6 w-28 rounded animate-pulse" />
+                        <div className={`${shimmer} relative overflow-hidden bg-slate-200 mb-2 h-6 w-28 rounded`} />
                     </h1>
                     <div className="grid gap-y-1">
                         {Array.from({ length: 7 }).map((_, index) => (
                             <div
                                 key={index}
-                                className="grid grid-cols-3 justify-between animate-pulse"
+                                className="grid grid-cols-3 justify-between"
                             >
-                                <div className="bg-white/60 h-4 w-16 rounded"></div>
-                                <div className="bg-white/60 h-6 w-6 mx-auto rounded-full"></div>
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-200 h-4 w-16 rounded`} />
+                                <div className={`${shimmer} relative overflow-hidden bg-slate-200 h-6 w-6 mx-auto rounded-full`} />
                                 <div className="flex space-x-2 justify-center">
-                                    <div className="bg-white/60 h-4 w-12 rounded"></div>
-                                    <div className="bg-white/60 h-4 w-12 rounded"></div>
+                                    <div className={`${shimmer} relative overflow-hidden bg-slate-200 h-4 w-12 rounded`} />
+                                    <div className={`${shimmer} relative overflow-hidden bg-slate-200 h-4 w-12 rounded`} />
                                 </div>
                             </div>
                         ))}

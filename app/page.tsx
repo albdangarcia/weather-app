@@ -29,7 +29,7 @@ const Home = async ({ searchParams }: Props) => {
 
     return (
         <>
-            <GitHubIcon />
+        <GitHubIcon />
         <div className="mb-20">
             <Nav />
             <DateLocation cityName={cityName} />
