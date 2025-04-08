@@ -12,7 +12,6 @@ import {
 import {
     calculateFeelsLike,
     celsiusToFahrenheit,
-    formatTime,
     handleApiResponse,
     metersToMiles,
     pascalToInHg,
@@ -100,7 +99,7 @@ const fetchWeatherData = async ({
 
         const hourlyForecast = forecastHourlyData.properties.periods
             .map((period: HourlyForecastType) => ({
-                startTime: formatTime(period.startTime),
+                startTime: period.startTime,
                 isDaytime: period.isDaytime,
                 temperature: period.temperature,
                 temperatureUnit: period.temperatureUnit,

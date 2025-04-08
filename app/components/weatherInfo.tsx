@@ -39,7 +39,7 @@ const WeatherInfo = ({
                                 className="text-center flex-shrink-0 w-16 space-y-1"
                             >
                                 <p className="font-medium">
-                                    {period.startTime}
+                                    {new Date(period.startTime).toLocaleTimeString([], { hour: "numeric", hour12: true })}
                                 </p>
                                 <p className="flex items-center justify-center">
                                     {getWeatherEmoji(

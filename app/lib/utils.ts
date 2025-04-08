@@ -49,12 +49,6 @@ export const handleApiResponse = async <T>(
     return data as T;
 };
 
-// Function to format time to "h A" (e.g., "5 PM")
-export const formatTime = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: "numeric", hour12: true });
-};
-
 // Function to process daily forecasts
 export const processDailyForecasts = (
     periods: DailyForecastType[]
