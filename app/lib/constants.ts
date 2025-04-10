@@ -41,7 +41,6 @@ export const cities = [
     { city: "Miami, FL", lat: "25.7617", long: "-80.1918" },
     { city: "Long Beach, CA", lat: "33.7701", long: "-118.1937" },
     { city: "Virginia Beach, VA", lat: "36.8529", long: "-75.9780" },
-    { city: "Oakland, CA", lat: "37.8044", long: "-122.2712" },
     { city: "Minneapolis, MN", lat: "44.9778", long: "-93.2650" },
     { city: "Tulsa, OK", lat: "36.1539", long: "-95.9928" },
     { city: "Arlington, TX", lat: "32.7357", long: "-97.1081" },

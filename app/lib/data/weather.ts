@@ -8,6 +8,7 @@ import {
     ObservationStationsData,
     ObservationType,
     PointData,
+    ProcessedDailyForecast,
 } from "../types";
 import {
     calculateFeelsLike,
@@ -25,13 +26,23 @@ const API_CONFIG = {
     },
 } as const;
 
+type WeatherData = {
+  dailyForecasts: ProcessedDailyForecast[];
+  hourlyForecast: { startTime: string; isDaytime: boolean; temperature: number; temperatureUnit: string; shortForecast: string; }[];
+  observationList: observationListType[];
+  errorMessage: string;
+};
+
+type FetchWeatherDataReturnType = Partial<WeatherData>;
+
 // Function to fetch weather data
 const fetchWeatherData = async ({
     latitude,
     longitude,
-}: CoordinatesTypes) => {
+}: CoordinatesTypes): Promise<FetchWeatherDataReturnType> => {
     try {
-        // Validate latitude and longitude
+      
+        // If latitude and longitude are not provided then default to New York 
         if (!latitude && !longitude) {
             latitude = "40.7128";
             longitude = "-74.006";
@@ -42,7 +53,6 @@ const fetchWeatherData = async ({
         const pointData = await handleApiResponse<PointData>(
             await fetch(pointUrl, {
                 headers: API_CONFIG.headers,
-                // cache: "force-cache",
                 next: { revalidate: 600 },
             }),
             "Error fetching point data"
@@ -86,14 +96,13 @@ const fetchWeatherData = async ({
         const observationsData = await handleApiResponse<ObservationsData>(
             await fetch(observationsUrl, {
                 headers: API_CONFIG.headers,
-                // cache: "force-cache",
                 next: { revalidate: 600 },
             }),
             "Error fetching observations data"
         );
 
         // Process the data
-        const dailyForecasts = processDailyForecasts(
+        const dailyForecasts: ProcessedDailyForecast[] = processDailyForecasts(
             forecastDailyData.properties.periods
         );
 
@@ -145,15 +154,9 @@ const fetchWeatherData = async ({
         // await new Promise((resolve) => setTimeout(resolve, 5000));
 
         return { dailyForecasts, hourlyForecast, observationList };
-    } catch (error: unknown) {
-        const err = error as Error;
-        console.error("Weather data fetch error:", err);
-        return {
-            dailyForecasts: [],
-            hourlyForecast: [],
-            observationList: [],
-            errorMessage: err.message || "Failed to fetch weather data",
-        };
+    } catch (error) {
+        console.error("Failed to Fetch Weather Data.", error);
+        throw new Error("Failed to Fetch Weather Data.");
     }
 };
 
