@@ -11,13 +11,7 @@ import {
   PointData,
   ProcessedDailyForecast,
 } from "../types";
-import {
-  calculateFeelsLike,
-  celsiusToFahrenheit,
-  metersToMiles,
-  pascalToInHg,
-  processDailyForecasts,
-} from "../utils";
+import { metersToMiles, pascalToInHg, processDailyForecasts } from "../utils";
 
 const API_CONFIG = {
   baseUrl: "https://api.weather.gov",
@@ -46,60 +40,107 @@ const fetchWeatherData = async ({
   longitude,
 }: CoordinatesTypes): Promise<FetchWeatherDataReturnType> => {
   try {
-    // If latitude and longitude are not provided then default to New York
-    if (!latitude && !longitude) {
-      latitude = "40.7128";
-      longitude = "-74.006";
+    if (!latitude || !longitude) {
+      // Provide default coordinates if none are given
+      latitude = "40.7128"; // New York Latitude
+      longitude = "-74.006"; // New York Longitude
     }
 
     // Initial point data fetch
     const pointUrl = `${API_CONFIG.baseUrl}/points/${latitude},${longitude}`;
-    // Use fetchWithTimeout directly
     const pointResponse = await fetchWithTimeout(pointUrl, {
-        headers: API_CONFIG.headers,
-        next: { revalidate: 600 },
+      // Get the Response
+      headers: API_CONFIG.headers,
+      next: { revalidate: 600 },
     });
+    // Pass the Response directly to the simplified handleApiResponse
     const pointData = await handleApiResponse<PointData>(
-      Promise.resolve(pointResponse), // Wrap response in a resolved promise for handleApiResponse
+      pointResponse,
       "Error fetching point data"
     );
 
-    const [forecastDailyResponse, forecastHourlyResponse, observationStationsResponse] =
+    // Fetch forecast and station data concurrently
+    const [
+      forecastDailyResponse,
+      forecastHourlyResponse,
+      observationStationsResponse,
+    ] = await Promise.all([
+      fetchWithTimeout(pointData.properties.forecast, {
+        headers: API_CONFIG.headers,
+      }),
+      fetchWithTimeout(pointData.properties.forecastHourly, {
+        headers: API_CONFIG.headers,
+      }),
+      fetchWithTimeout(pointData.properties.observationStations, {
+        headers: API_CONFIG.headers,
+      }),
+    ]);
+
+    // Process the responses concurrently
+    const [forecastDailyData, forecastHourlyData, observationStationsData] =
       await Promise.all([
-        fetchWithTimeout(pointData.properties.forecast, { headers: API_CONFIG.headers }),
-        fetchWithTimeout(pointData.properties.forecastHourly, { headers: API_CONFIG.headers }),
-        fetchWithTimeout(pointData.properties.observationStations, { headers: API_CONFIG.headers }),
+        handleApiResponse<ForecastData>(
+          forecastDailyResponse,
+          "Error fetching forecast data"
+        ),
+        handleApiResponse<HourlyForecastData>(
+          forecastHourlyResponse,
+          "Error fetching hourly forecast data"
+        ),
+        handleApiResponse<ObservationStationsData>(
+          observationStationsResponse,
+          "Error fetching observation stations data"
+        ),
       ]);
 
-    const [forecastDailyData, forecastHourlyData, observationStationsData] =
-        await Promise.all([
-            handleApiResponse<ForecastData>(Promise.resolve(forecastDailyResponse), "Error fetching forecast data"),
-            handleApiResponse<HourlyForecastData>(Promise.resolve(forecastHourlyResponse), "Error fetching hourly forecast data"),
-            handleApiResponse<ObservationStationsData>(Promise.resolve(observationStationsResponse), "Error fetching observation stations data"),
-        ]);
-
-
-    // Validate forecast data structure
+    // Validate forecast data structure more carefully
     if (
-      !forecastDailyData.properties?.periods ||
-      !forecastHourlyData.properties?.periods
+      !forecastDailyData?.properties?.periods ||
+      !forecastHourlyData?.properties?.periods
     ) {
+      // Log the problematic data structure if possible
+      console.error("Invalid forecast data structure received.", {
+        forecastDailyData,
+        forecastHourlyData,
+      });
       throw new Error("Invalid forecast data structure");
     }
+    // Also check observation stations data
+    if (
+      !observationStationsData?.features?.length ||
+      !observationStationsData.features[0]?.properties?.stationIdentifier
+    ) {
+      console.error("Invalid observation stations data structure received.", {
+        observationStationsData,
+      });
+      throw new Error("Invalid observation stations data structure");
+    }
 
-    // Fetch observations from nearest station with timeout
-    const nearestStation = observationStationsData.features[0].properties.stationIdentifier;
+    // Fetch observations from nearest station
+    const nearestStation =
+      observationStationsData.features[0].properties.stationIdentifier;
     const observationsUrl = `${API_CONFIG.baseUrl}/stations/${nearestStation}/observations/latest`;
     const observationsResponse = await fetchWithTimeout(observationsUrl, {
-        headers: API_CONFIG.headers,
-        next: { revalidate: 600 },
+      // Get the Response
+      headers: API_CONFIG.headers,
+      next: { revalidate: 600 },
     });
+    // Pass the Response directly to the simplified handleApiResponse
     const observationsData = await handleApiResponse<ObservationsData>(
-      Promise.resolve(observationsResponse),
+      observationsResponse,
       "Error fetching observations data"
     );
 
-    // Process the data
+    // Validate observations data
+    if (!observationsData?.properties) {
+      console.error("Invalid observations data structure received.", {
+        observationsData,
+      });
+      throw new Error("Invalid observations data structure");
+    }
+    const obserProps = observationsData.properties; // Now safe to access
+
+    // Process the data... (rest of your processing logic)
     const dailyForecasts: ProcessedDailyForecast[] = processDailyForecasts(
       forecastDailyData.properties.periods
     );
@@ -112,182 +153,51 @@ const fetchWeatherData = async ({
         temperatureUnit: period.temperatureUnit,
         shortForecast: period.shortForecast,
       }))
-      .slice(0, 24); // Limit to the first 24 hours
+      .slice(0, 24);
 
-    const obserProps = observationsData.properties;
+    // Safely access observation properties after validation
+    const humidityValue: number | null = obserProps.relativeHumidity?.value;
+    const visibilityMeters: number | null = obserProps.visibility?.value;
+    const pressurePascal: number | null = obserProps.barometricPressure?.value;
+
     const observations: ObservationType = {
-      feelsLike: calculateFeelsLike(
-        celsiusToFahrenheit(obserProps.temperature.value),
-        obserProps.heatIndex.value !== null
-          ? celsiusToFahrenheit(obserProps.heatIndex.value)
-          : null,
-        obserProps.windChill.value !== null
-          ? celsiusToFahrenheit(obserProps.windChill.value)
-          : null
-      ),
-      humidity: Math.round(obserProps.relativeHumidity.value),
-      visibility: metersToMiles(obserProps.visibility.value),
-      pressure: pascalToInHg(obserProps.barometricPressure.value),
+      humidity: humidityValue ? Math.round(humidityValue) : null,
+      visibility: visibilityMeters ? metersToMiles(visibilityMeters) : null,
+      pressure: pressurePascal ? pascalToInHg(pressurePascal) : null,
     };
 
     const observationList: observationListType[] = [
       {
         label: "Humidity",
         icon: "/weatherIcons/humidity.svg",
-        value: `${observations.humidity}%`,
+        value: observations.humidity ? `${observations.humidity}%` : "N/A",
       },
       {
         label: "Visibility",
         icon: "/weatherIcons/visibility.svg",
-        value: `${observations.visibility} mi`,
+        value: observations.visibility
+          ? `${observations.visibility} mi`
+          : "N/A",
       },
       {
         label: "Pressure",
         icon: "/weatherIcons/pressure.svg",
-        value: `${observations.pressure} inHg`,
+        value: observations.pressure ? `${observations.pressure} inHg` : "N/A",
       },
     ];
 
-    // delay to simulate loading
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
-
     return { dailyForecasts, hourlyForecast, observationList };
   } catch (error) {
-    // Log the specific error from handleApiResponse or fetchWithTimeout
-    console.error("Failed to Fetch Weather Data.", error instanceof Error ? error.message : error);
-    // Re-throw a user-friendly error or the specific error
-    throw new Error(`Failed to Fetch Weather Data. Reason: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(
+      "Failed to Fetch Weather Data.",
+      error instanceof Error ? error.message : error
+    );
+    // Re-throw a user-friendly error or the specific error, ensuring it's an Error object
+    const errorMessage = `Failed to Fetch Weather Data. Reason: ${
+      error instanceof Error ? error.message : String(error)
+    }`;
+    throw new Error(errorMessage);
   }
 };
 
 export { fetchWeatherData };
-
-
-
-
-
-// Function to fetch weather data
-// const fetchWeatherData = async ({
-//   latitude,
-//   longitude,
-// }: CoordinatesTypes): Promise<FetchWeatherDataReturnType> => {
-//   try {
-//     // If latitude and longitude are not provided then default to New York
-//     if (!latitude && !longitude) {
-//       latitude = "40.7128";
-//       longitude = "-74.006";
-//     }
-
-//     // Initial point data fetch
-//     const pointUrl = `${API_CONFIG.baseUrl}/points/${latitude},${longitude}`;
-//     const pointData = await handleApiResponse<PointData>(
-//       await fetch(pointUrl, {
-//         headers: API_CONFIG.headers,
-//         next: { revalidate: 600 },
-//       }),
-//       "Error fetching point data"
-//     );
-
-//     // Parallel fetch for forecasts and stations
-//     const [forecastDailyData, forecastHourlyData, observationStationsData] =
-//       await Promise.all([
-//         handleApiResponse<ForecastData>(
-//           await fetch(pointData.properties.forecast, {
-//             headers: API_CONFIG.headers,
-//           }),
-//           "Error fetching forecast data"
-//         ),
-//         handleApiResponse<HourlyForecastData>(
-//           await fetch(pointData.properties.forecastHourly, {
-//             headers: API_CONFIG.headers,
-//           }),
-//           "Error fetching hourly forecast data"
-//         ),
-//         handleApiResponse<ObservationStationsData>(
-//           await fetch(pointData.properties.observationStations, {
-//             headers: API_CONFIG.headers,
-//           }),
-//           "Error fetching observation stations data"
-//         ),
-//       ]);
-
-//     // Validate forecast data structure
-//     if (
-//       !forecastDailyData.properties?.periods ||
-//       !forecastHourlyData.properties?.periods
-//     ) {
-//       throw new Error("Invalid forecast data structure");
-//     }
-
-//     // Fetch observations from nearest station
-//     const nearestStation =
-//       observationStationsData.features[0].properties.stationIdentifier;
-//     const observationsUrl = `${API_CONFIG.baseUrl}/stations/${nearestStation}/observations/latest`;
-//     const observationsData = await handleApiResponse<ObservationsData>(
-//       await fetch(observationsUrl, {
-//         headers: API_CONFIG.headers,
-//         next: { revalidate: 600 },
-//       }),
-//       "Error fetching observations data"
-//     );
-
-//     // Process the data
-//     const dailyForecasts: ProcessedDailyForecast[] = processDailyForecasts(
-//       forecastDailyData.properties.periods
-//     );
-
-//     const hourlyForecast = forecastHourlyData.properties.periods
-//       .map((period: HourlyForecastType) => ({
-//         startTime: period.startTime,
-//         isDaytime: period.isDaytime,
-//         temperature: period.temperature,
-//         temperatureUnit: period.temperatureUnit,
-//         shortForecast: period.shortForecast,
-//       }))
-//       .slice(0, 24); // Limit to the first 24 hours
-
-//     const obserProps = observationsData.properties;
-//     const observations: ObservationType = {
-//       feelsLike: calculateFeelsLike(
-//         celsiusToFahrenheit(obserProps.temperature.value),
-//         obserProps.heatIndex.value !== null
-//           ? celsiusToFahrenheit(obserProps.heatIndex.value)
-//           : null,
-//         obserProps.windChill.value !== null
-//           ? celsiusToFahrenheit(obserProps.windChill.value)
-//           : null
-//       ),
-//       humidity: Math.round(obserProps.relativeHumidity.value),
-//       visibility: metersToMiles(obserProps.visibility.value),
-//       pressure: pascalToInHg(obserProps.barometricPressure.value),
-//     };
-
-//     const observationList: observationListType[] = [
-//       {
-//         label: "Humidity",
-//         icon: "/weatherIcons/humidity.svg",
-//         value: `${observations.humidity}%`,
-//       },
-//       {
-//         label: "Visibility",
-//         icon: "/weatherIcons/visibility.svg",
-//         value: `${observations.visibility} mi`,
-//       },
-//       {
-//         label: "Pressure",
-//         icon: "/weatherIcons/pressure.svg",
-//         value: `${observations.pressure} inHg`,
-//       },
-//     ];
-
-//     // delay to simulate loading
-//     // await new Promise((resolve) => setTimeout(resolve, 5000));
-
-//     return { dailyForecasts, hourlyForecast, observationList };
-//   } catch (error) {
-//     console.error("Failed to Fetch Weather Data.", error);
-//     throw new Error("Failed to Fetch Weather Data.");
-//   }
-// };
-
-// export { fetchWeatherData };

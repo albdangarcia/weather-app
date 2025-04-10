@@ -6,28 +6,6 @@ import {
     ProcessedDailyForecast,
 } from "./types";
 
-// Function to calculate the "feels like" temperature
-export const calculateFeelsLike = (
-    temperature: number,
-    heatIndex: number | null,
-    windChill: number | null
-): number => {
-    if (heatIndex !== null && temperature >= 80) {
-        // 80°F
-        return heatIndex;
-    } else if (windChill !== null && temperature <= 50) {
-        // 50°F
-        return windChill;
-    } else {
-        return temperature;
-    }
-};
-
-// Function to convert Celsius to Fahrenheit
-export const celsiusToFahrenheit = (celsius: number): number => {
-    return Math.round((celsius * 9) / 5 + 32);
-};
-
 // Function to convert pressure from Pascals to inches of mercury
 export const pascalToInHg = (pascals: number): number => {
     return Math.round(pascals * 0.0002953);

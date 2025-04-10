@@ -32,10 +32,9 @@ export interface observationListType {
 
 // Define the type for observation data
 export interface ObservationType {
-    feelsLike: number;
-    humidity: number;
-    visibility: number;
-    pressure: number;
+    humidity: number | undefined | null;
+    visibility: number | undefined | null;
+    pressure: number | undefined | null;
 }
 
 // Type definitions for API responses

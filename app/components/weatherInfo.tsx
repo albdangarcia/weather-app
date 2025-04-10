@@ -54,7 +54,7 @@ const WeatherInfo = ({
           {/* forecast observations */}
           <div className="bg-black py-4 rounded text-[#FAE262] grid grid-cols-3">
             {observationList.map((observation) => (
-              <div key={observation.value} className="text-center space-y-1 text-sm">
+              <div key={`${observation.label}-${observation.value}`} className="text-center space-y-1 text-sm">
                 <Image
                   className="flex mx-auto"
                   src={observation.icon}
