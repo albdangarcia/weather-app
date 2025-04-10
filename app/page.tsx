@@ -25,7 +25,7 @@ const Home = async ({ searchParams }: Props) => {
   }
 
   // Fetch the weather data
-  const { dailyForecasts, hourlyForecast, observationList, errorMessage } =
+  const { dailyForecasts, hourlyForecast, observationList } =
     await fetchWeatherData({ latitude, longitude });
 
   // Check if the essential weather data arrays (daily, hourly, observations) were successfully fetched and contain data.
