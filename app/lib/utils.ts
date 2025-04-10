@@ -1,4 +1,5 @@
 import { cities } from "./constants";
+import { DateTime } from 'luxon';
 import {
     CoordinatesTypes,
     DailyForecastType,
@@ -35,18 +36,6 @@ export const pascalToInHg = (pascals: number): number => {
 // Function to convert meters to miles
 export const metersToMiles = (meters: number): number => {
     return Math.round(meters * 0.000621371 * 100) / 100; // Round to 2 decimal places
-};
-
-// Generic helper function to handle API responses with proper typing
-export const handleApiResponse = async <T>(
-    response: Response,
-    errorMessage: string
-): Promise<T> => {
-    if (!response.ok) {
-        throw new Error(`${errorMessage}: ${response.statusText}`);
-    }
-    const data = await response.json();
-    return data as T;
 };
 
 // Function to process daily forecasts
@@ -113,3 +102,9 @@ export const getCityByCoordinates = ({
     }
     return undefined;
 };
+
+// Formats an ISO time string to a 12-hour time format (e.g., "8 AM", "11 AM") while preserving the original time zone.
+export const formatTimeOriginalZone = (startTime: string): string => {
+  const dt = DateTime.fromISO(startTime, { setZone: true });
+  return dt.toFormat('h a'); // e.g., "8 AM", "11 AM"
+}
