@@ -5,7 +5,7 @@ export async function handleApiResponse<T>(
   errorMessage: string
 ): Promise<T> {
   try {
-    // 1. Check if the response status is OK (already done by fetchWithTimeout implicitly, but good practice)
+    // 1. Check if the response status is OK (already done by fetchWithTimeout implicitly)
     if (!response.ok) {
       console.error(`${errorMessage}. Status: ${response.status} ${response.statusText}`);
       throw new Error(`${errorMessage} (Status: ${response.status} ${response.statusText})`);
@@ -50,7 +50,6 @@ export async function handleApiResponse<T>(
   }
 }
 
-// *** fetchWithTimeout remains the same - IT IS CORRECT ***
 export async function fetchWithTimeout(
   url: string,
   options: RequestInit = {},
