@@ -42,7 +42,7 @@ export default function Error({
 
       {/* Error Message */}
       <p className="text-lg text-center text-gray-700 mb-6">
-        We couldn't load the weather data at this moment. Please try again.
+        We couldn&apos;t load the weather data at this moment. Please try again.
         {process.env.NODE_ENV === "development" && error?.message && (
           <span className="block text-sm text-red-600 mt-2">
             Details: {error.message}{" "}
