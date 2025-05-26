@@ -1,7 +1,10 @@
 export default function GitHubIcon() {
   return (
     <div className="absolute z-30 top-1 right-1 w-7 h-7 fill-gray-900">
-      <a href="https://github.com/albdangarcia/weather-app" aria-label="Link to GitHub Repo">
+      <a
+        href="https://github.com/albdangarcia/weather-app"
+        aria-label="Link to GitHub Repo"
+      >
         <svg
           width="100%"
           height="100%"

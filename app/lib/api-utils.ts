@@ -7,15 +7,21 @@ export async function handleApiResponse<T>(
   try {
     // 1. Check if the response status is OK (already done by fetchWithTimeout implicitly)
     if (!response.ok) {
-      console.error(`${errorMessage}. Status: ${response.status} ${response.statusText}`);
-      throw new Error(`${errorMessage} (Status: ${response.status} ${response.statusText})`);
+      console.error(
+        `${errorMessage}. Status: ${response.status} ${response.statusText}`
+      );
+      throw new Error(
+        `${errorMessage} (Status: ${response.status} ${response.statusText})`
+      );
     }
 
     // 2. Check for empty body before parsing JSON
     const text = await response.text();
     if (!text) {
       console.warn(`Empty response body received for: ${errorMessage}`);
-      throw new Error(`${errorMessage} (Received OK status but empty response body)`);
+      throw new Error(
+        `${errorMessage} (Received OK status but empty response body)`
+      );
     }
 
     // 3. Try to parse JSON
@@ -27,7 +33,7 @@ export async function handleApiResponse<T>(
         parseError,
         // Log only a snippet of potentially large text
         "Response Text Snippet:",
-        text.substring(0, 100) + (text.length > 100 ? '...' : '')
+        text.substring(0, 100) + (text.length > 100 ? "..." : "")
       );
       throw new Error(`${errorMessage} (JSON Parsing Failed)`);
     }
@@ -35,7 +41,10 @@ export async function handleApiResponse<T>(
     // Log and re-throw, ensuring it's an Error object
     if (error instanceof Error) {
       // Log the specific error encountered during response processing
-      console.error(`Response handling error for ${errorMessage}:`, error.message);
+      console.error(
+        `Response handling error for ${errorMessage}:`,
+        error.message
+      );
       throw error; // Re-throw the original error
     } else {
       // Handle rare cases where non-Error was thrown
@@ -44,7 +53,9 @@ export async function handleApiResponse<T>(
         error
       );
       throw new Error(
-        `An unexpected error occurred during response handling: ${errorMessage} (Value: ${String(error)})`
+        `An unexpected error occurred during response handling: ${errorMessage} (Value: ${String(
+          error
+        )})`
       );
     }
   }

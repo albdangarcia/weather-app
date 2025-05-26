@@ -32,7 +32,6 @@ const WeatherInfo = ({
       >
         {/* left col */}
         <div className="grid grid-cols-1 gap-y-6">
-
           {/* hourly forecast */}
           <div className={`flex overflow-x-auto text-sm`}>
             {hourlyForecast.map((period) => (
@@ -54,7 +53,10 @@ const WeatherInfo = ({
           {/* forecast observations */}
           <div className="bg-black py-4 rounded text-[#FAE262] grid grid-cols-3">
             {observationList.map((observation) => (
-              <div key={`${observation.label}-${observation.value}`} className="text-center space-y-1 text-sm">
+              <div
+                key={`${observation.label}-${observation.value}`}
+                className="text-center space-y-1 text-sm"
+              >
                 <Image
                   className="flex mx-auto"
                   src={observation.icon}
@@ -78,7 +80,10 @@ const WeatherInfo = ({
           <div className="grid gap-y-1">
             {/* start from index 1 to skipt the today forecast */}
             {dailyForecasts.slice(1).map((forecast) => (
-              <div key={forecast.day} className="grid grid-cols-3 justify-between">
+              <div
+                key={forecast.day}
+                className="grid grid-cols-3 justify-between"
+              >
                 <p className="font-medium">{forecast.day}</p>
                 <p className="flex items-center justify-center">
                   {getWeatherEmoji(forecast.shortForecast, forecast.isDaytime)}

@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { JSX } from 'react';
+import Link from "next/link";
+import { JSX } from "react";
 
 interface NotFoundErrorProps {
   error?: string;
@@ -11,14 +11,10 @@ interface NotFoundErrorProps {
  */
 const NotFoundError = ({ error }: NotFoundErrorProps): JSX.Element => {
   return (
-    <div
-      className="bg-[#fae262] text-[#171717] m-0 font-sans h-screen text-center flex flex-col items-center justify-center"
-    >
+    <div className="bg-[#fae262] text-[#171717] m-0 font-sans h-screen text-center flex flex-col items-center justify-center">
       {/* Inner div containing the error code and message */}
       <div>
-        <h1
-          className="next-error-h1 inline-block mr-5 pr-5 text-xl font-medium align-top leading-[49px] border-r border-black"
-        >
+        <h1 className="next-error-h1 inline-block mr-5 pr-5 text-xl font-medium align-top leading-[49px] border-r border-black">
           404
         </h1>
         {/* Error message container */}

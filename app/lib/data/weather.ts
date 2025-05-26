@@ -1,4 +1,4 @@
-import { fetchWithTimeout, handleApiResponse } from "../apiUtils";
+import { fetchWithTimeout, handleApiResponse } from "../api-utils";
 import {
   CoordinatesTypes,
   ForecastData,
