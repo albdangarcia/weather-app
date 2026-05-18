@@ -88,7 +88,7 @@ export default function Error({
       {process.env.NODE_ENV === "development" &&
         error?.message &&
         !isNotFoundError && (
-          <div className="text-sm text-red-600 mt-2 p-2 border border-red-200 bg-red-50 rounded max-w-md text-left">
+          <div className="text-sm text-red-600 mt-2 p-2 border border-red-200 bg-red-50 rounded-sm max-w-md text-left">
             <p>
               <strong>Development Error Details:</strong>
             </p>

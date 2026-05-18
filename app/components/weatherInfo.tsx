@@ -28,7 +28,7 @@ const WeatherInfo = ({
         detailedForecast={dailyForecasts[0].detailedForecast}
       />
       <div
-        className={`${openSans.className} grid md:grid-cols-2 grid-cols-1 w-[24rem] md:w-[48rem] mx-auto gap-y-6`}
+        className={`${openSans.className} grid md:grid-cols-2 grid-cols-1 w-[24rem] md:w-3xl mx-auto gap-y-6`}
       >
         {/* left col */}
         <div className="grid grid-cols-1 gap-y-6">
@@ -37,7 +37,7 @@ const WeatherInfo = ({
             {hourlyForecast.map((period) => (
               <div
                 key={period.startTime}
-                className="text-center flex-shrink-0 w-16 space-y-1"
+                className="text-center shrink-0 w-16 space-y-1"
               >
                 <p className="font-medium">
                   {formatTimeOriginalZone(period.startTime)}
@@ -51,7 +51,7 @@ const WeatherInfo = ({
           </div>
 
           {/* forecast observations */}
-          <div className="bg-black py-4 rounded text-[#FAE262] grid grid-cols-3">
+          <div className="bg-black py-4 rounded-sm text-[#FAE262] grid grid-cols-3">
             {observationList.map((observation) => (
               <div
                 key={`${observation.label}-${observation.value}`}

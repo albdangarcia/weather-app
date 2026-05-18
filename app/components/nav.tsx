@@ -98,7 +98,7 @@ const Nav = () => {
             type="text"
             id="search-location-code"
             name="searchLocationCode"
-            className="bg-[#212121] mb-7 text-gray-300 rounded-sm w-full text-sm placeholder:text-gray-600 h-8 px-2 py-4 border border-[#3A3A3A] focus:border-gray-600 focus:outline-none"
+            className="bg-[#212121] mb-7 text-gray-300 rounded-xs w-full text-sm placeholder:text-gray-600 h-8 px-2 py-4 border border-[#3A3A3A] focus:border-gray-600 focus:outline-hidden"
             placeholder="Search Location"
             value={searchQuery}
             onChange={handleSearchChange}
@@ -111,7 +111,7 @@ const Nav = () => {
             {filteredCities.map((city) => (
               <li key={city.city} className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <span className="bg-[#FAE262] w-[3px] h-10 rounded-sm" />
+                  <span className="bg-[#FAE262] w-[3px] h-10 rounded-xs" />
                   <a
                     href={`?latitude=${city.lat}&longitude=${city.long}`}
                     className="text-gray-200 text-sm font-semibold"

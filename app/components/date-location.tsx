@@ -23,7 +23,7 @@ const DateLocation = ({ cityName }: Props) => {
       {/* Displaying the formatted date */}
       <p>{formattedDate}</p>
       {/* Displaying the city name or 'Unknown' if cityName is undefined */}
-      <p className="bg-black rounded py-1.5 px-4 text-[#FAE262]">
+      <p className="bg-black rounded-sm py-1.5 px-4 text-[#FAE262]">
         {cityName ? cityName : "Unknown"}
       </p>
     </div>
