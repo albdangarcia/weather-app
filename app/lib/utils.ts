@@ -22,31 +22,23 @@ export const processDailyForecasts = (
 ): ProcessedDailyForecast[] => {
   const processedForecasts: ProcessedDailyForecast[] = [];
 
-  // Remove the first period (Tonight, Overnight, etc.)
-  if (periods.length > 0) {
-    const period = periods.shift(); // Remove the first period
-    if (period) {
-      processedForecasts.push({
-        day: period.name,
-        shortForecast: period.shortForecast,
-        detailedForecast: period.detailedForecast,
-        isDaytime: period.isDaytime,
-        high: period.temperature,
-        low: period.temperature,
-      });
-    }
+  if (!periods || periods.length === 0) return processedForecasts;
+
+  let alignedPeriods = [...periods];
+
+  if (!alignedPeriods[0].isDaytime) {
+    // This drops "Tonight" so the array cleanly starts with "Tomorrow"
+    alignedPeriods = alignedPeriods.slice(1); 
   }
 
-  for (let i = 0; i < periods.length; i += 2) {
-    const dayPeriod = periods[i];
-    const nightPeriod = periods[i + 1];
+  for (let i = 0; i < alignedPeriods.length; i += 2) {
+    const dayPeriod = alignedPeriods[i];
+    const nightPeriod = alignedPeriods[i + 1];
 
     if (!dayPeriod) continue;
 
-    // Extract the day name from the full name (e.g., "Tuesday" -> "Tue")
     const day = dayPeriod.name.split(" ")[0].slice(0, 3);
 
-    // Calculate high and low temperatures
     const high = nightPeriod
       ? Math.max(dayPeriod.temperature, nightPeriod.temperature)
       : dayPeriod.temperature;
@@ -54,7 +46,6 @@ export const processDailyForecasts = (
       ? Math.min(dayPeriod.temperature, nightPeriod.temperature)
       : dayPeriod.temperature;
 
-    // Day temperature is the high, night temperature is the low
     processedForecasts.push({
       day,
       shortForecast: dayPeriod.shortForecast,
@@ -69,16 +60,17 @@ export const processDailyForecasts = (
 };
 
 // Function to get city by coordinates
-export const getCityByCoordinates = ({
-  latitude = "40.7128",
-  longitude = "-74.006",
-}: CoordinatesTypes): string | undefined => {
+export const getCityByCoordinates = (coords: CoordinatesTypes): string => {
+  const latToSearch = coords.latitude || "40.7128";
+  const longToSearch = coords.longitude || "-74.006";
+
   for (const cityObj of cities) {
-    if (cityObj.lat === latitude && cityObj.long === longitude) {
+    if (cityObj.lat === latToSearch && cityObj.long === longToSearch) {
       return cityObj.city;
     }
   }
-  return undefined;
+
+  return "New York";
 };
 
 // Formats an ISO time string to a 12-hour time format (e.g., "8 AM", "11 AM") while preserving the original time zone.

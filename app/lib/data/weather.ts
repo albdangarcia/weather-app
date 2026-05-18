@@ -10,6 +10,7 @@ import {
   ObservationType,
   PointData,
   ProcessedDailyForecast,
+  StoredWeatherData
 } from "../types";
 import { metersToMiles, pascalToInHg, processDailyForecasts } from "../utils";
 
@@ -33,7 +34,7 @@ type WeatherData = {
   errorMessage: string;
 };
 
-type FetchWeatherDataReturnType = Partial<WeatherData>;
+type FetchWeatherDataReturnType = Omit<StoredWeatherData, 'cityName' | 'timestamp'>;
 
 const fetchWeatherData = async ({
   latitude,
@@ -67,12 +68,15 @@ const fetchWeatherData = async ({
     ] = await Promise.all([
       fetchWithTimeout(pointData.properties.forecast, {
         headers: API_CONFIG.headers,
+        next: { revalidate: 600 },
       }),
       fetchWithTimeout(pointData.properties.forecastHourly, {
         headers: API_CONFIG.headers,
+        next: { revalidate: 600 },
       }),
       fetchWithTimeout(pointData.properties.observationStations, {
         headers: API_CONFIG.headers,
+        next: { revalidate: 600 },
       }),
     ]);
 
@@ -138,9 +142,8 @@ const fetchWeatherData = async ({
       });
       throw new Error("Invalid observations data structure");
     }
-    const obserProps = observationsData.properties; // Now safe to access
+    const obserProps = observationsData.properties;
 
-    // Process the data... (rest of your processing logic)
     const dailyForecasts: ProcessedDailyForecast[] = processDailyForecasts(
       forecastDailyData.properties.periods
     );
@@ -192,7 +195,6 @@ const fetchWeatherData = async ({
       "Failed to Fetch Weather Data.",
       error instanceof Error ? error.message : error
     );
-    // Re-throw a user-friendly error or the specific error, ensuring it's an Error object
     const errorMessage = `Failed to Fetch Weather Data. Reason: ${
       error instanceof Error ? error.message : String(error)
     }`;

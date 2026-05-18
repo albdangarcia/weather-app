@@ -82,3 +82,12 @@ export interface CoordinatesTypes {
   latitude: string | undefined;
   longitude: string | undefined;
 }
+
+// Stale Data Context Type
+export interface StoredWeatherData {
+  dailyForecasts: ProcessedDailyForecast[];
+  hourlyForecast: HourlyForecastType[];
+  observationList: observationListType[];
+  cityName: string;
+  timestamp?: number;
+}
