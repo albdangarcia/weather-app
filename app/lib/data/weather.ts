@@ -21,19 +21,6 @@ const API_CONFIG = {
   },
 } as const;
 
-type WeatherData = {
-  dailyForecasts: ProcessedDailyForecast[];
-  hourlyForecast: {
-    startTime: string;
-    isDaytime: boolean;
-    temperature: number;
-    temperatureUnit: string;
-    shortForecast: string;
-  }[];
-  observationList: observationListType[];
-  errorMessage: string;
-};
-
 type FetchWeatherDataReturnType = Omit<StoredWeatherData, 'cityName' | 'timestamp'>;
 
 const fetchWeatherData = async ({
